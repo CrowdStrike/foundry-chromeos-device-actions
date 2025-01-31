@@ -11,6 +11,25 @@ trigger:
         type: object
 actions:
     chromeos___convert_host_id_6903f0f1:
+        next:
+            - get_ou_from_collection_a6c10da3
         id: functions.ConvertDeviceId.ChromeOS - Convert Host ID
+        properties:
+            host_id: ${host_id}
+    chromeos__move_devices_to_ou_d398672e:
+        id: api_integrations.ChromeOS API.ChromeOS- Move Devices to OU
+        properties:
+            json:
+                deviceIds:
+                    - ${chromeos___convert_host_id_6903f0f1.FaaS.ConvertDeviceId.ChromeOS-ConvertHostID.device_id}
+            params:
+                path:
+                    customerId: placeholder
+                query:
+                    OrgUnitPath: placeholder
+    get_ou_from_collection_a6c10da3:
+        next:
+            - chromeos__move_devices_to_ou_d398672e
+        id: functions.CollectionActions.get_ou_from_collection
         properties:
             host_id: ${host_id}
