@@ -1,5 +1,5 @@
-app_id: 173525c1e7274b1db4b9dccb226349a5
-name: ChromeOS-device-actions
+app_id: 173525c1e7274b1db4b9dccb226349a9
+name: ChromeOS-device-actions-test
 description: Integration for Chrome OS Devices
 logo: ""
 manifest_version: "2023-05-09"
@@ -16,12 +16,7 @@ api_integrations:
       description: ""
       path: api-integrations/ChromeOS_API.json
 rtr_scripts: []
-collections:
-    - name: ChromeOS_Existing_OU_Collection
-      description: Collection to hold existing OU for device containment.
-      schema: collections/ChromeOS_Existing_OU_Collection.json
-      permissions: []
-      workflow_integration: null
+collections: []
 auth:
     scopes: []
     permissions: {}
@@ -89,9 +84,12 @@ functions:
           permissions: []
       language: python
 workflows:
-    - id: 32798bd844434807bd06b2151fab4b83
+    - id: 64b49eb2325a48d1bd9fbe770d1bc81c
       name: ChromeOS- Device Containment
-      path: workflows/ChromeOS-_Contain_Device_Workflow.yml
+      path: workflows/ChromeOS-_Device_Containment.yml
+    - id: 2a700411aa7b4998a93441790eba3c46
+      name: ChromeOS- Lift Device Containment
+      path: workflows/ChromeOS-_Lift_Device_Containment.yml
 parsers: []
 logscale:
     saved_searches: []

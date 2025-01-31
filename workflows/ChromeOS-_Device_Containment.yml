@@ -1,0 +1,18 @@
+name: ChromeOS- Device Containment
+provision_on_install: true
+trigger:
+    next:
+        - sensor_platform_is_equal_to_chromeos_75d57a64
+    event: Investigatable/EPP
+actions:
+    chromeos___convert_host_id_18d4be81:
+        id: functions.ConvertDeviceId.ChromeOS - Convert Host ID
+        properties:
+            host_id: ${Trigger.Category.Investigatable.Product.EPP.Sensor.SensorID}
+conditions:
+    sensor_platform_is_equal_to_chromeos_75d57a64:
+        next:
+            - chromeos___convert_host_id_18d4be81
+        expression: Trigger.Category.Investigatable.Product.EPP.Sensor.Platform:'ChromeOS'
+        display:
+            - Sensor platform is equal to ChromeOS
