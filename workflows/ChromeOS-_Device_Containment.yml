@@ -1,4 +1,21 @@
 name: ChromeOS- Device Containment
+parameters:
+    actions:
+        configuration:
+            chromeos__get_device_info_f2b570fa:
+                properties:
+                    config_id:
+                        required: false
+                    params.path.customerId:
+                        required: true
+            chromeos__move_devices_to_ou_2df55573:
+                properties:
+                    config_id:
+                        required: false
+                    params.path.customerId:
+                        required: true
+                    params.query.OrgUnitPath:
+                        required: true
 provision_on_install: true
 trigger:
     next:
@@ -25,7 +42,6 @@ actions:
         properties:
             params:
                 path:
-                    customerId: placeholder
                     deviceId: ${chromeos___convert_host_id_18d4be81.FaaS.ConvertDeviceId.ChromeOS-ConvertHostID.device_id}
     chromeos__move_devices_to_ou_2df55573:
         id: api_integrations.ChromeOS API.ChromeOS- Move Devices to OU
@@ -33,11 +49,6 @@ actions:
             json:
                 deviceIds:
                     - ${chromeos___convert_host_id_18d4be81.FaaS.ConvertDeviceId.ChromeOS-ConvertHostID.device_id}
-            params:
-                path:
-                    customerId: placeholder
-                query:
-                    OrgUnitPath: placeholder
 conditions:
     sensor_platform_is_equal_to_chromeos_75d57a64:
         next:

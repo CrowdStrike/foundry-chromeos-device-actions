@@ -1,4 +1,13 @@
 name: ChromeOS- Lift Device Containment
+parameters:
+    actions:
+        configuration:
+            chromeos__move_devices_to_ou_d398672e:
+                properties:
+                    config_id:
+                        required: false
+                    params.path.customerId:
+                        required: true
 provision_on_install: true
 trigger:
     next:
@@ -23,10 +32,8 @@ actions:
                 deviceIds:
                     - ${chromeos___convert_host_id_6903f0f1.FaaS.ConvertDeviceId.ChromeOS-ConvertHostID.device_id}
             params:
-                path:
-                    customerId: placeholder
                 query:
-                    OrgUnitPath: placeholder
+                    OrgUnitPath: ${get_ou_from_collection_a6c10da3.FaaS.CollectionActions.get_ou_from_collection.original_ou_id}
     get_ou_from_collection_a6c10da3:
         next:
             - chromeos__move_devices_to_ou_d398672e
