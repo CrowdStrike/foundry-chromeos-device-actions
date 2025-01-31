@@ -1,0 +1,99 @@
+app_id: 173525c1e7274b1db4b9dccb226349a5
+name: ChromeOS-device-actions
+description: Integration for Chrome OS Devices
+logo: ""
+manifest_version: "2023-05-09"
+ignored: []
+ui:
+    homepage: ""
+    extensions: []
+    pages: {}
+    dashboards: {}
+    navigation: {}
+api_integrations:
+    - id: 549607a608c2407285f5bc25ac6745f6
+      name: ChromeOS API
+      description: ""
+      path: api-integrations/ChromeOS_API.json
+rtr_scripts: []
+collections:
+    - name: ChromeOS_Existing_OU_Collection
+      description: Collection to hold existing OU for device containment.
+      schema: collections/ChromeOS_Existing_OU_Collection.json
+      permissions: []
+      workflow_integration: null
+auth:
+    scopes: []
+    permissions: {}
+    roles: []
+functions:
+    - id: 3bfd1b3c92a6422590303437e93ee451
+      name: ConvertDeviceId
+      config: null
+      description: Converts chrome device device_id to a format accepted by Google admin api.
+      path: functions/ConvertDeviceId
+      environment_variables: {}
+      handlers:
+        - name: ChromeOS - Convert Host ID
+          description: Converts chrome device device_id to a format accepted by Google admin api.
+          method: POST
+          api_path: /convert_host_id
+          request_schema: schemas/request_schema.json
+          response_schema: schemas/response_schema.json
+          workflow_integration:
+            id: 186d09xxx06673c
+            disruptive: false
+            system_action: false
+            tags:
+                - ChromeOS
+                - Convert
+                - DeviceId
+          permissions: []
+      language: python
+    - id: f642a5fc3aab455d8987895fbfe04583
+      name: CollectionActions
+      config: null
+      description: A group of functions to take action on a collection.
+      path: functions/CollectionActions
+      environment_variables: {}
+      handlers:
+        - name: add_ou_to_collection
+          description: Adds a ChromeOS device's existing OU to a collection.
+          method: PUT
+          api_path: /add_ou_to_collection
+          request_schema: schemas/add_to_collection_request_schema.json
+          response_schema: schemas/add_to_collection_response_schema.json
+          workflow_integration:
+            id: 186d09xxx06673d
+            disruptive: false
+            system_action: false
+            tags:
+                - ChromeOS
+                - Collection
+                - OU
+          permissions: []
+        - name: get_ou_from_collection
+          description: Retrieves a ChromeOS device's existing OU from a collection.
+          method: GET
+          api_path: /get_ou_from_collection
+          request_schema: schemas/get_ou_from_collection_request_schema.json
+          response_schema: schemas/get_ou_from_collection_response_schema.json
+          workflow_integration:
+            id: 186d09xxx06673e
+            disruptive: false
+            system_action: false
+            tags:
+                - ChromeOS
+                - Collection
+                - OU
+          permissions: []
+      language: python
+workflows:
+    - id: 32798bd844434807bd06b2151fab4b83
+      name: ChromeOS- Device Containment
+      path: workflows/ChromeOS-_Contain_Device_Workflow.yml
+parsers: []
+logscale:
+    saved_searches: []
+lookup_files: []
+app_docs: []
