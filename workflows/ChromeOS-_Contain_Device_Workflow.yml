@@ -1,0 +1,59 @@
+name: ChromeOS- Device Containment
+parameters:
+    actions:
+        configuration:
+            chromeos__get_device_info_c3bcec00:
+                properties:
+                    config_id:
+                        required: true
+                    params.path.customerId:
+                        required: true
+            chromeos__move_devices_to_ou_0fd2aa29:
+                properties:
+                    config_id:
+                        required: true
+                    params.query.OrgUnitPath:
+                        required: true
+provision_on_install: true
+trigger:
+    next:
+        - FROM_sensor_platform_is_equal_to_chromeos_f7f26411_TO_activity_chromeos___convert_host_id_c6a9bdd8
+    event: Investigatable/EPP
+actions:
+    add_ou_to_collection_21677396:
+        next:
+            - chromeos__move_devices_to_ou_0fd2aa29
+        id: functions.CollectionActions.add_ou_to_collection
+        properties:
+            existing_ou_id: ${chromeos__get_device_info_c3bcec00.API_Integration.Custom_ChromeOS_API.ChromeOS-_Get_Device_Info.body.orgUnitId}
+            host_id: ${Trigger.Category.Investigatable.Product.EPP.Sensor.SensorID}
+    chromeos___convert_host_id_c6a9bdd8:
+        next:
+            - chromeos__get_device_info_c3bcec00
+        id: functions.ConvertDeviceId.ChromeOS - Convert Host ID
+        properties:
+            host_id: ${Trigger.Category.Investigatable.Product.EPP.Sensor.SensorID}
+    chromeos__get_device_info_c3bcec00:
+        next:
+            - add_ou_to_collection_21677396
+        id: api_integrations.ChromeOS API.ChromeOS- Get Device Info
+        properties:
+            params:
+                path:
+                    deviceId: ${chromeos___convert_host_id_c6a9bdd8.FaaS.ConvertDeviceId.ChromeOS-ConvertHostID.device_id}
+    chromeos__move_devices_to_ou_0fd2aa29:
+        id: api_integrations.ChromeOS API.ChromeOS- Move Devices to OU
+        properties:
+            json:
+                deviceIds:
+                    - ${chromeos___convert_host_id_c6a9bdd8.FaaS.ConvertDeviceId.ChromeOS-ConvertHostID.device_id}
+            params:
+                path:
+                    customerId: Google admin customer iD
+conditions:
+    FROM_sensor_platform_is_equal_to_chromeos_f7f26411_TO_activity_chromeos___convert_host_id_c6a9bdd8:
+        next:
+            - chromeos___convert_host_id_c6a9bdd8
+        expression: Trigger.Category.Investigatable.Product.EPP.Sensor.Platform:'ChromeOS'
+        display:
+            - Sensor platform is equal to ChromeOS
