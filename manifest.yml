@@ -1,12 +1,30 @@
 app_id: 173525c1e7274b1db4b9dccb226349a9
-name: ChromeOS-device-actions-test
+name: ChromeOS-device-actions
 description: Integration for Chrome OS Devices
 logo: ""
 manifest_version: "2023-05-09"
 ignored: []
 ui:
     homepage: ""
-    extensions: []
+    extensions:
+        - id: fa0691e6efb74b7a8c15145ec00e371f
+          name: ChromeOS
+          description: 'Disable/Reenable a ChromeOS device '
+          path: ui/extensions/ChromeOS/ChromeOS.json
+          entrypoint: ""
+          sockets:
+            - activity.detections.details
+          content_security_policy:
+            connect-src: []
+            style-src: []
+            style-src-elem: []
+            script-src: []
+            form-action: []
+            img-src: []
+            media-src: []
+            object-src: []
+          permissions: []
+          is_ui_builder: true
     pages: {}
     dashboards: {}
     navigation: {}
@@ -16,7 +34,12 @@ api_integrations:
       description: ""
       path: api-integrations/ChromeOS_API.json
 rtr_scripts: []
-collections: []
+collections:
+    - name: ChromeOS_Existing_OU_Collection
+      description: Collection to hold existing OU for device containment.
+      schema: collections/ChromeOS_Existing_OU_Collection.json
+      permissions: []
+      workflow_integration: null
 auth:
     scopes: []
     permissions: {}

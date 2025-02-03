@@ -5,7 +5,7 @@ import json
 
 func = Function.instance()
 
-COLLECTION_NAME = "chromeos_device_original_ou_collection"
+COLLECTION_NAME = "ChromeOS_Existing_OU_Collection"
 
 
 @func.handler(method="PUT", path="/add_ou_to_collection")
