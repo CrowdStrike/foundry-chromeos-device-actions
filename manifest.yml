@@ -7,13 +7,14 @@ ignored: []
 ui:
     homepage: ""
     extensions:
-        - id: fa0691e6efb74b7a8c15145ec00e371f
+        - id: ac55a108ac9a4cfd817565b8aafdec87
           name: ChromeOS
-          description: 'Disable/Reenable a ChromeOS device '
-          path: ui/extensions/ChromeOS/ChromeOS.json
-          entrypoint: ""
+          description: Disable/Re-enable ChromeOS devices
+          path: ui/extensions/ChromeOS/src
+          entrypoint: ui/extensions/ChromeOS/src/index.html
           sockets:
             - activity.detections.details
+            - hosts.host.panel
           content_security_policy:
             connect-src: []
             style-src: []
@@ -24,7 +25,7 @@ ui:
             media-src: []
             object-src: []
           permissions: []
-          is_ui_builder: true
+          is_ui_builder: false
     pages: {}
     dashboards: {}
     navigation: {}
@@ -107,12 +108,12 @@ functions:
           permissions: []
       language: python
 workflows:
-    - id: 64b49eb2325a48d1bd9fbe770d1bc81c
-      name: ChromeOS- Device Containment
-      path: workflows/ChromeOS-_Device_Containment.yml
-    - id: 2a700411aa7b4998a93441790eba3c46
-      name: ChromeOS- Lift Device Containment
-      path: workflows/ChromeOS-_Lift_Device_Containment.yml
+    - id: 6bc95996ad894141b07928a8e889980f
+      name: ChromeOS Lift Containment
+      path: workflows/ChromeOS_Lift_Containment.yml
+    - id: 38c44b70922041baaf515b21974a18c7
+      name: ChromeOS Device Containment
+      path: workflows/ChromeOS_Device_Containment.yml
 parsers: []
 logscale:
     saved_searches: []
