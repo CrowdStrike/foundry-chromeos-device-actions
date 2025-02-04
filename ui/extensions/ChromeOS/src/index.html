@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hello World</title>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@crowdstrike/foundry-js": "https://assets.foundry.crowdstrike.com/foundry-js@0.17.1/index.js"
+        }
+      }
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://assets.foundry.crowdstrike.com/tailwind-toucan-base@5.0.0/toucan.css"
+    />
+  </head>
+
+  <body class="bg-surface-md">
+    <div id="titleDiv" class="flex justify-between px-3 pt-3">
+      <h1 class="text-titles-and-attributes">Hello world loading...</h1>
+    </div>
+    <div id="dataDiv" class="justify-between px-3 pt-3"> </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
