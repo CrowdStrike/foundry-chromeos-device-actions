@@ -20,14 +20,14 @@
     "contact": {
       "email": "gax.theodorio@crowdstrike.com"
     },
-    "title": "ChromeOS API",
+    "title": "chromeos-api",
     "version": ""
   },
   "openapi": "3.0.3",
   "paths": {
     "/admin/directory/v1/customer/{customerId}/devices/chromeos/moveDevicesToOu": {
       "post": {
-        "operationId": "ChromeOS- Move Devices to OU",
+        "operationId": "ChromeOS- Move Device to OU",
         "parameters": [
           {
             "in": "path",
@@ -40,7 +40,7 @@
           },
           {
             "in": "query",
-            "name": "OrgUnitPath",
+            "name": "orgUnitPath",
             "required": true,
             "schema": {
               "title": "OrgUnitPath",
@@ -72,9 +72,9 @@
         "responses": null,
         "x-cs-operation-config": {
           "workflow": {
-            "description": "ChromeOS- Move Devices to OU",
+            "description": "ChromeOS- Move Device to OU",
             "expose_to_workflow": true,
-            "name": "ChromeOS- Move Devices to OU",
+            "name": "ChromeOS- Move Device to OU",
             "system": false
           }
         }
@@ -87,7 +87,6 @@
           {
             "in": "path",
             "name": "customerId",
-            "required": true,
             "schema": {
               "title": "CustomerId",
               "type": "string"
@@ -96,7 +95,6 @@
           {
             "in": "path",
             "name": "deviceId",
-            "required": true,
             "schema": {
               "title": "DeviceId",
               "type": "string"
