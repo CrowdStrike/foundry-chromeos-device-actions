@@ -1,2 +1,6 @@
-ui/extensions/ChromeOS/ChromeOS.json
-add
+dist/
+node_modules/
+.DS_Store
+out/
+*.tar.gz
+ChromeOS Foundry App/
