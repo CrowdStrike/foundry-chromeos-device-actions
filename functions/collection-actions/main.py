@@ -6,7 +6,7 @@ import json
 func = Function.instance()
 
 OU_COLLECTION_NAME = "existing_ou"
-CUSTOMER_ID_COLLECTION_NAME = "customer_id"
+SETTINGS_COLLECTION_NAME = "settings"
 
 
 @func.handler(method="PUT", path="/add_ou_to_collection")
@@ -24,7 +24,9 @@ def add_ou_to_collection(request: Request, config: [Dict[str, any], None]) -> Re
 
     data = {"original-ou-path": existing_ou_id}
 
-    response = falcon_custom_storage.PutObject(collection_name=OU_COLLECTION_NAME, body=data, object_key=host_id)
+    response = falcon_custom_storage.PutObject(
+        collection_name=OU_COLLECTION_NAME, body=data, object_key=host_id
+    )
 
     body = {"status": "OK", "message": str(response)}
 
@@ -35,7 +37,9 @@ def add_ou_to_collection(request: Request, config: [Dict[str, any], None]) -> Re
 
 
 @func.handler(method="GET", path="/get_ou_from_collection")
-def get_ou_from_collection(request: Request, config: [Dict[str, any], None]) -> Response:
+def get_ou_from_collection(
+    request: Request, config: [Dict[str, any], None]
+) -> Response:
 
     falcon_custom_storage = CustomStorage()
 
@@ -44,7 +48,9 @@ def get_ou_from_collection(request: Request, config: [Dict[str, any], None]) -> 
     # in case wrong Id is used, strip all hyphens
     host_id = host_id.replace("-", "")
 
-    response = falcon_custom_storage.GetObject(collection_name=OU_COLLECTION_NAME, object_key=host_id)
+    response = falcon_custom_storage.GetObject(
+        collection_name=OU_COLLECTION_NAME, object_key=host_id
+    )
     response = json.loads(response.decode("utf-8"))
 
     body = {"original_ou_id": response["original-ou-path"]}
@@ -55,37 +61,24 @@ def get_ou_from_collection(request: Request, config: [Dict[str, any], None]) -> 
     )
 
 
-@func.handler(method="PUT", path="/add_customerid_to_collection")
-def add_customerid_to_collection(request: Request, config: [Dict[str, any], None]) -> Response:
+@func.handler(method="GET", path="/get_settings_from_collection")
+def get_settings_from_collection(
+    request: Request, config: [Dict[str, any], None]
+) -> Response:
 
     falcon_custom_storage = CustomStorage()
 
-    key = "customer_id_key"
-    customer_id = request.body.get("customer_id")
+    key = "all"
 
-    data = {"customer_id": customer_id}
-
-    response = falcon_custom_storage.PutObject(collection_name=CUSTOMER_ID_COLLECTION_NAME, body=data, object_key=key)
-
-    body = {"status": "OK", "message": str(response)}
-
-    return Response(
-        body=body,
-        code=200,
+    response = falcon_custom_storage.GetObject(
+        collection_name=SETTINGS_COLLECTION_NAME, object_key=key
     )
-
-
-@func.handler(method="GET", path="/get_customerid_from_collection")
-def get_customerid_from_collection(request: Request, config: [Dict[str, any], None]) -> Response:
-
-    falcon_custom_storage = CustomStorage()
-
-    key = "customer_id_key"
-
-    response = falcon_custom_storage.GetObject(collection_name=CUSTOMER_ID_COLLECTION_NAME, object_key=key)
     response = json.loads(response.decode("utf-8"))
 
-    body = {"customer_id": response["customer_id"]}
+    body = {
+        "customer_id": response["customer_id"],
+        "containment_ou": response["containment_ou"],
+    }
 
     return Response(
         body=body,

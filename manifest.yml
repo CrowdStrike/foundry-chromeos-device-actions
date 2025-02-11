@@ -74,6 +74,15 @@ collections:
     workflow_integration:
       system_action: false
       tags: []
+  - name: settings
+    description: ChromeOS settings collection
+    schema: collections/settings.json
+    permissions: []
+    workflow_integration:
+      system_action: false
+      tags:
+        - chromeos
+        - chromeos-settings
 auth:
   scopes: []
   permissions: {}
@@ -115,34 +124,23 @@ functions:
             - ChromeOS
             - Convert
             - DeviceId
+            - GET
         permissions: []
-      - name: get_customerid_from_collection
-        description: Retrieves Google Admin Customer ID a collection.
+      - name: get_settings_from_collection
+        description: Retrieves the ChromeOS settings from a collection.
         method: GET
-        api_path: /get_customerid_from_collection
+        api_path: /get_settings_from_collection
         request_schema: null
-        response_schema: schemas/get_customerid_from_collection_response_schema.json
+        response_schema: schemas/get_settings_from_collection_response_schema.json
         workflow_integration:
-          id: 5e903bdd02d84b398e4672851bac6645
+          id: 8eeefaccc7d1477999df9b811371eadc
           disruptive: false
           system_action: false
           tags:
             - ChromeOS
-            - CustomerID
-        permissions: []
-      - name: add_customerid_to_collection
-        description: Adds Google Admin Customer ID to a collection.
-        method: PUT
-        api_path: /add_customerid_to_collection
-        request_schema: schemas/add_customerid_to_collection_request_schema.json
-        response_schema: schemas/add_customerid_to_collection_response_schema.json
-        workflow_integration:
-          id: 2ec6187c3f594abeb93d7bbb5e5efefb
-          disruptive: false
-          system_action: false
-          tags:
-            - ChromeOS
-            - CustomerID
+            - Settings
+            - Collection
+            - GET
         permissions: []
     language: python
   - id: 7dfcc120d34c4c10b5a75ff352d82cca

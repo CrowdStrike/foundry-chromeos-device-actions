@@ -3,15 +3,15 @@
     "title": "",
     "type": "object",
     "properties": {
-        "status": {
+        "customer_id": {
             "type": "string"
         },
-        "message": {
+        "containment_ou": {
             "type": "string"
         }
     },
     "required": [
-        "status",
-        "message"
+        "customer_id",
+        "containment_ou"
     ]
 }
