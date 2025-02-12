@@ -1,0 +1,9 @@
+name: Get settings wf 3
+provision_on_install: true
+trigger:
+    next:
+        - get_settings_from_collection_0c317708
+actions:
+    get_settings_from_collection_0c317708:
+        id: functions.collection-actions.get_settings_from_collection
+        properties: {}

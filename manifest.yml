@@ -166,7 +166,10 @@ functions:
             - DeviceId
         permissions: []
     language: python
-workflows: []
+workflows:
+    - id: 2f33adaf845246aaaba04c26c3064503
+      name: Get settings wf 3
+      path: workflows/Get_settings_wf_3.yml
 parsers: []
 logscale:
   saved_searches: []
