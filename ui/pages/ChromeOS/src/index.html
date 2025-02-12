@@ -18,8 +18,41 @@
   </head>
 
   <body class="bg-ground-floor">
-    <div id="app">
-      <h1 class="text-titles-and-attributes">Hello world loading...</h1>
+    <div class="p-6">
+      <h1 class="text-titles-and-attributes mb-6">ChromeOS Settings</h1>
+
+      <div class="mb-4">
+        <label class="block text-titles-and-attributes mb-2 text-sm" for="customerId">
+          Google Admin Customer ID
+        </label>
+        <input
+          type="text"
+          id="customerId"
+          class="w-80 p-2 border rounded-md focusable"
+          placeholder="Enter Customer ID"
+        >
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-titles-and-attributes mb-2 text-sm" for="containmentOu">
+          Containment OU ID
+        </label>
+        <input
+          type="text"
+          id="containmentOu"
+          class="w-80 p-2 border rounded-md focusable"
+          placeholder="Enter Containment OU ID"
+        >
+      </div>
+
+      <button
+        id="saveButton"
+        class="focusable inline-flex items-center justify-center transition truncate type-md-medium rounded flex-1 interactive-normal px-4 py-2"
+      >
+        Save Settings
+      </button>
+
+      <div id="statusMessage" class="mt-4 text-sm"></div>
     </div>
 
     <script src="./app.js" type="module"></script>
