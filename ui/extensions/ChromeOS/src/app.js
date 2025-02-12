@@ -102,14 +102,20 @@ async function handleDeviceAction(action, deviceId, customer_id) {
   }
 }
 
-function setupToggleButton(deviceId, customer_id) {
+function setupToggleButton(deviceId, customer_id, initialStatus) {
+  const titleDiv = document.getElementById("titleDiv");
   const button = document.getElementById("toggleButton");
   if (!button) return;
 
-  button.addEventListener("click", async function () {
+  // Initial setup of button text
+  updateButtonState(initialStatus);
+
+  async function handleClick() {
     try {
-      // Match the action with deviceActions object in handleDeviceAction
-      const action = button.textContent === "Re-enable" ? "enable" : "disable";
+      const currentStatus = await getDeviceStatus(deviceId, customer_id);
+      const action = currentStatus === "DISABLED" ? "enable" : "disable";
+
+      // Show loading state
       button.disabled = true;
       button.innerHTML = `<span class="spinner"></span> ${
         action === "disable" ? "Disabling" : "Enabling"
@@ -117,20 +123,29 @@ function setupToggleButton(deviceId, customer_id) {
 
       await handleDeviceAction(action, deviceId, customer_id);
 
-      // Update button text based on the action taken
-      button.textContent = action === "disable" ? "Re-enable" : "Disable";
-      button.disabled = false;
+      // Get the new status after the action
+      const newStatus = await getDeviceStatus(deviceId, customer_id);
+
+      // Update UI elements
+      updateButtonState(newStatus);
+      titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Device Status: ${newStatus}</h1>`;
     } catch (error) {
-      updateUI(
-        "Error",
-        `Failed to ${button.textContent.toLowerCase()} device: ${
-          error.message
-        }`,
-        true
-      );
-      button.disabled = false; // Re-enable button on error
+      console.error("Error updating device status:", error);
+      titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Error</h1>`;
+      button.textContent = "Error";
+      button.classList.add("text-critical");
+    } finally {
+      button.disabled = false;
     }
-  });
+  }
+
+  function updateButtonState(status) {
+    button.textContent = status === "DISABLED" ? "Re-enable" : "Disable";
+    button.disabled = false;
+    button.classList.remove("text-critical");
+  }
+
+  button.addEventListener("click", handleClick);
 }
 
 async function handleDeviceData(data, customer_id) {
@@ -159,7 +174,7 @@ async function handleDeviceData(data, customer_id) {
       </button>`
     );
 
-    setupToggleButton(deviceId, customer_id);
+    setupToggleButton(deviceId, customer_id, status);
   } catch (error) {
     console.error("Error getting device status:", error);
     updateUI("Error", "Failed to get device status: " + error.message, true);
