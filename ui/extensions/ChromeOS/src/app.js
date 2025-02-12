@@ -168,7 +168,7 @@ async function handleDeviceData(data, customer_id) {
     const status = await getDeviceStatus(deviceId, customer_id);
 
     updateUI(
-      `Disabled Status: ${status}`,
+      `Device Status: ${status}`,
       `<button id="toggleButton" class="focusable inline-flex items-center justify-center transition truncate type-md-medium rounded flex-1 interactive-normal px-4 py-1">
         ${status === "DISABLED" ? "Re-enable" : "Disable"}
       </button>`
