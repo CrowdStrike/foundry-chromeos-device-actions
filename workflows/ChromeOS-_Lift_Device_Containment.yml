@@ -1,4 +1,5 @@
-name: ChromeOS- Lift Device Containment 2
+name: Lift Device Containment 2
+provision_on_install: true
 trigger:
     next:
         - chromeos___convert_host_id_23f00ded
