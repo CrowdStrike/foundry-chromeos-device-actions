@@ -1,0 +1,39 @@
+name: ChromeOS - Lift Device Containment
+trigger:
+    next:
+        - chromeos___convert_host_id_23f00ded
+    name: On demand
+    parameters:
+        properties:
+            host_id:
+                type: string
+        type: object
+actions:
+    chromeos___convert_host_id_23f00ded:
+        next:
+            - get_ou_from_collection_743e2907
+        id: functions.convert-device-id.ChromeOS - Convert Host ID
+        properties:
+            host_id: ${host_id}
+    chromeos__move_device_to_ou_4b52c94e:
+        id: api_integrations.chromeos-api.ChromeOS- Move Device to OU
+        properties:
+            json:
+                deviceIds:
+                    - ${chromeos___convert_host_id_23f00ded.FaaS.convert-device-id.ChromeOS-ConvertHostID.device_id}
+            params:
+                path:
+                    customerId: ${get_settings_from_collection_8db0d6a3.FaaS.collection-actions.get_settings_from_collection.customer_id}
+                query:
+                    orgUnitPath: ${get_settings_from_collection_8db0d6a3.FaaS.collection-actions.get_settings_from_collection.containment_ou}
+    get_ou_from_collection_743e2907:
+        next:
+            - get_settings_from_collection_8db0d6a3
+        id: functions.collection-actions.get_ou_from_collection
+        properties:
+            host_id: ${host_id}
+    get_settings_from_collection_8db0d6a3:
+        next:
+            - chromeos__move_device_to_ou_4b52c94e
+        id: functions.collection-actions.get_settings_from_collection
+        properties: {}
