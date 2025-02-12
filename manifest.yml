@@ -167,12 +167,12 @@ functions:
         permissions: []
     language: python
 workflows:
-    - id: 2f33adaf845246aaaba04c26c3064503
-      name: Get settings wf 3
-      path: workflows/Get_settings_wf_3.yml
-    - id: 0f02adcff98f49cf913bf0298cc103c8
-      name: ChromeOS - Lift Device Containment
-      path: workflows/ChromeOS_-_Lift_Device_Containment.yml
+    - id: 0f02adcff98f49cf913bf0298cc103c9
+      name: ChromeOS- Lift Device Containment 2
+      path: workflows/ChromeOS-_Lift_Device_Containment.yml
+    - id: 6345837a48bc452c8ee341827979ee57
+      name: ChromeOS- Device Containment
+      path: workflows/ChromeOS-_Device_Containment.yml
 parsers: []
 logscale:
   saved_searches: []
