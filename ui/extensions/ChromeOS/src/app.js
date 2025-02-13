@@ -1,36 +1,217 @@
-import FalconApi from '@crowdstrike/foundry-js';
+import FalconApi from "@crowdstrike/foundry-js";
 
 const falcon = new FalconApi();
 
+async function loadSettings() {
+  try {
+    console.log("Attempting to read settings...");
+    const settings = await falcon
+      .collection({ collection: "settings" })
+      .read("all");
+    console.log("Settings read complete:", settings);
+    if (!settings || !settings.customer_id) {
+      throw new Error("No customer ID configured");
+    }
+    return settings;
+  } catch (error) {
+    console.error("Error loading settings:", error);
+    throw error;
+  }
+}
+
+function updateUI(titleText, content, isError = false) {
+  const titleDiv = document.getElementById("titleDiv");
+  const dataDiv = document.getElementById("dataDiv");
+
+  titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">${titleText}</h1>`;
+  dataDiv.innerHTML = content;
+
+  if (isError) {
+    dataDiv.classList.add("text-critical");
+  }
+}
+
+function convertDeviceId(deviceId) {
+  // Add hyphens to the hex string to make it UUID formatted for ChromeOS
+  return deviceId.replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, "$1-$2-$3-$4-$5");
+}
+
+async function getDeviceStatus(deviceId, customer_id) {
+  try {
+    const formattedDeviceId = convertDeviceId(deviceId);
+    const getDeviceInfo = falcon.apiIntegration({
+      definitionId: "827dab54623a455a9e9062d29bef085b",
+      operationId: "ChromeOS- Get Device Info",
+    });
+
+    const response = await getDeviceInfo.execute({
+      request: {
+        params: {
+          path: {
+            customerId: customer_id,
+            deviceId: formattedDeviceId,
+          },
+        },
+      },
+    });
+
+    if (response.resources?.[0]?.status_code === 200) {
+      // return the status
+      console.log(
+        "Device status response:",
+        response.resources[0].response_body
+      );
+      return response.resources[0].response_body.status;
+    }
+  } catch (error) {
+    console.error("Error getting device status:", error);
+    throw error;
+  }
+}
+
+async function handleDeviceAction(action, deviceId, customer_id) {
+  console.log(`Handling device action: ${action} for device: ${deviceId}`);
+  try {
+    const deviceActions = {
+      disable: "CHANGE_CHROME_OS_DEVICE_STATUS_ACTION_DISABLE",
+      enable: "CHANGE_CHROME_OS_DEVICE_STATUS_ACTION_REENABLE",
+    };
+    const formattedDeviceId = convertDeviceId(deviceId);
+    const changeStatus = falcon.apiIntegration({
+      definitionId: "827dab54623a455a9e9062d29bef085b",
+      operationId: "ChromeOS- Change Device Status",
+    });
+
+    await changeStatus.execute({
+      request: {
+        params: {
+          path: {
+            customer_id: customer_id,
+          },
+        },
+        json: {
+          changeChromeOsDeviceStatusAction: deviceActions[action],
+          deviceIds: [formattedDeviceId],
+        },
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error(`Error performing ${action} action:`, error);
+    throw error;
+  }
+}
+
+function setupToggleButton(deviceId, customer_id, initialStatus) {
+  const titleDiv = document.getElementById("titleDiv");
+  const button = document.getElementById("toggleButton");
+  if (!button) return;
+
+  // Initial setup of button text
+  updateButtonState(initialStatus);
+
+  async function handleClick() {
+    try {
+      const currentStatus = await getDeviceStatus(deviceId, customer_id);
+      const action = currentStatus === "DISABLED" ? "enable" : "disable";
+
+      // Show loading state
+      button.disabled = true;
+      button.innerHTML = `<span class="spinner"></span> ${
+        action === "disable" ? "Disabling" : "Enabling"
+      }...`;
+
+      await handleDeviceAction(action, deviceId, customer_id);
+
+      // Get the new status after the action
+      const newStatus = await getDeviceStatus(deviceId, customer_id);
+
+      // Update UI elements
+      updateButtonState(newStatus);
+      titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Device Status: ${newStatus}</h1>`;
+    } catch (error) {
+      console.error("Error updating device status:", error);
+      titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Error</h1>`;
+      button.textContent = "Error";
+      button.classList.add("text-critical");
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  function updateButtonState(status) {
+    button.textContent = status === "DISABLED" ? "Re-enable" : "Disable";
+    button.disabled = false;
+    button.classList.remove("text-critical");
+  }
+
+  button.addEventListener("click", handleClick);
+}
+
+async function handleDeviceData(data, customer_id) {
+  const platformName =
+    data.detection?.device?.platform_name || data.platform_name;
+  const deviceId = data.detection?.device?.device_id || data.device_id;
+
+  // Check platform first before making any API calls
+  if (platformName !== "ChromeOS") {
+    updateUI(
+      "Invalid Device",
+      "This extension is only for ChromeOS Devices",
+      true
+    );
+    return;
+  }
+
+  try {
+    // Await the status call
+    const status = await getDeviceStatus(deviceId, customer_id);
+
+    updateUI(
+      `Device Status: ${status}`,
+      `<button id="toggleButton" class="focusable inline-flex items-center justify-center transition truncate type-md-medium rounded flex-1 interactive-normal px-4 py-1">
+        ${status === "DISABLED" ? "Re-enable" : "Disable"}
+      </button>`
+    );
+
+    setupToggleButton(deviceId, customer_id, status);
+  } catch (error) {
+    console.error("Error getting device status:", error);
+    updateUI("Error", "Failed to get device status: " + error.message, true);
+  }
+}
+
 (async () => {
-  await falcon.connect();
+  try {
+    console.log("Starting setup...");
+    await falcon.connect();
+    console.log("Falcon connected");
 
-  falcon.events.on('data', (data) => {
-    // const myJson = JSON.stringify(data, null, 2);
-    const dataDiv = document.getElementById('dataDiv');
-    const titleDiv = document.getElementById('titleDiv');
-
-    // Because we can accept data from 2 different data source, in order to ensure
-    // we are working with the right platform, we need to check for platform_name from 2
-    // places: data.detections.device.platform_name or data.platform_name
-    const platformName = data.detection?.device?.platform_name || data.platform_name;
-    const status = data.detection?.device?.status || data.status;
-
-    if (platformName != 'ChromeOS') {
-    titleDiv.innerHTML =
-      '<h1 class="text-titles-and-attributes">This extension is only for ChromeOS Devices</h1>';
-    } else {
-      titleDiv.innerHTML =
-        '<h1 class="text-titles-and-attributes">Disabled Status: ' + status + '</h1>';
-
-      dataDiv.innerHTML =
-        '<button id="toggleButton" class="focusable inline-flex items-center justify-center transition truncate type-md-medium rounded flex-1 interactive-normal px-4 py-1">Disable</button>';
+    // Set up event listener first
+    console.log("Setting up event listener...");
+    falcon.events.on("data", async (data) => {
+      try {
+        console.log("Received data:", data);
+        // Load settings when we actually need them
+        const settings = await loadSettings();
+        handleDeviceData(data, settings.customer_id);
+      } catch (error) {
+        console.error("Error handling data:", error);
+        updateUI(
+          "Configuration Error",
+          "Failed to load settings: " + error.message,
+          true
+        );
       }
-      // Add click event listener to the button
-      document.getElementById('toggleButton').addEventListener('click', function() {
-        const button = document.getElementById('toggleButton');
-        button.textContent = button.textContent === 'Disable' ? 'Re-enable' : 'Disable';
-      });
+    });
 
-  })
+    console.log("Event listener setup complete");
+  } catch (error) {
+    console.error("Setup error:", error);
+    updateUI(
+      "Configuration Required",
+      "Please complete the configuration in the Custom apps -> ChromeOS Settings page first",
+      true
+    );
+  }
 })();

@@ -4,3 +4,5 @@ node_modules/
 out/
 *.tar.gz
 ChromeOS Foundry App/
+package.json
+package-lock.json

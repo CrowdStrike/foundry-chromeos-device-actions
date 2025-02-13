@@ -1,0 +1,76 @@
+name: Device Containment 2
+provision_on_install: true
+trigger:
+    next:
+        - sensor_platform_is_equal_to_chromeos_c3521e03
+    event: Investigatable/EPP
+actions:
+    add_ou_to_collection_eeb5388f:
+        next:
+            - chromeos__move_device_to_ou_95c13540
+        id: functions.collection-actions.add_ou_to_collection
+        properties:
+            existing_ou_id: ${chromeos__get_device_info_b48e039f.API_Integration.Custom_chromeos-api.ChromeOS-_Get_Device_Info.body.orgUnitId}
+            host_id: ${chromeos__get_device_info_b48e039f.API_Integration.Custom_chromeos-api.ChromeOS-_Get_Device_Info.body.deviceId}
+    chromeos___convert_host_id_abaf817e:
+        next:
+            - get_settings_from_collection_34abe840
+        id: functions.convert-device-id.ChromeOS - Convert Host ID
+        properties:
+            host_id: ${Trigger.Category.Investigatable.Product.EPP.Sensor.SensorID}
+    chromeos__change_device_status_a5b124d1:
+        id: api_integrations.chromeos-api.ChromeOS- Change Device Status
+        properties:
+            json:
+                changeChromeOsDeviceStatusAction: CHANGE_CHROME_OS_DEVICE_STATUS_ACTION_DISABLE
+                deviceIds:
+                    - ${chromeos__get_device_info_b48e039f.API_Integration.Custom_chromeos-api.ChromeOS-_Get_Device_Info.body.deviceId}
+            params:
+                path:
+                    customer_id: ${get_settings_from_collection_34abe840.FaaS.collection-actions.get_settings_from_collection.customer_id}
+    chromeos__get_device_info_b48e039f:
+        next:
+            - add_ou_to_collection_eeb5388f
+        id: api_integrations.chromeos-api.ChromeOS- Get Device Info
+        properties:
+            params:
+                path:
+                    customerId: ${get_settings_from_collection_34abe840.FaaS.collection-actions.get_settings_from_collection.customer_id}
+                    deviceId: ${chromeos___convert_host_id_abaf817e.FaaS.convert-device-id.ChromeOS-ConvertHostID.device_id}
+    chromeos__move_device_to_ou_95c13540:
+        next:
+            - severity_is_equal_to_highseverity_is_equal_to_critical_c7be153c
+        id: api_integrations.chromeos-api.ChromeOS- Move Device to OU
+        properties:
+            json:
+                deviceIds:
+                    - ${chromeos__get_device_info_b48e039f.API_Integration.Custom_chromeos-api.ChromeOS-_Get_Device_Info.body.deviceId}
+            params:
+                path:
+                    customerId: ${get_settings_from_collection_34abe840.FaaS.collection-actions.get_settings_from_collection.customer_id}
+                query:
+                    orgUnitPath: ${get_settings_from_collection_34abe840.FaaS.collection-actions.get_settings_from_collection.containment_ou}
+    get_settings_from_collection_34abe840:
+        next:
+            - chromeos__get_device_info_b48e039f
+        id: functions.collection-actions.get_settings_from_collection
+        properties: {}
+conditions:
+    sensor_platform_is_equal_to_chromeos_c3521e03:
+        next:
+            - chromeos___convert_host_id_abaf817e
+        expression: Trigger.Category.Investigatable.Product.EPP.Sensor.Platform:'ChromeOS'
+        display:
+            - Sensor platform is equal to ChromeOS
+    severity_is_equal_to_highseverity_is_equal_to_critical_c7be153c:
+        next:
+            - status_is_equal_to_active_d8c3c312
+        expression: (Trigger.Category.Investigatable.Severity:4),(Trigger.Category.Investigatable.Severity:5)
+        display:
+            - '[["Severity is equal to High"],["Severity is equal to Critical"]]'
+    status_is_equal_to_active_d8c3c312:
+        next:
+            - chromeos__change_device_status_a5b124d1
+        expression: add_ou_to_collection_eeb5388f.FaaS.collection-actions.add_ou_to_collection.status:'ACTIVE'
+        display:
+            - Status is equal to ACTIVE
