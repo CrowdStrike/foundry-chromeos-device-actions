@@ -1,6 +1,6 @@
 app_id: fedeb09f055d47d38890f89360cfa61f
 name: ChromeOS Foundry App
-description: Do stuff with ChromeOS devices
+description: A Foundry app for managing and securing ChromeOS devices through the Google Admin API
 logo: ""
 manifest_version: "2023-05-09"
 ignored:
