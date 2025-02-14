@@ -1,4 +1,4 @@
-name: Device Containment 2
+name: ChromeOS Device Containment
 provision_on_install: true
 trigger:
     next:

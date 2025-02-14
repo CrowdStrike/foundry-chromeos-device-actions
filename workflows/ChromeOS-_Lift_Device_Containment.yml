@@ -1,4 +1,4 @@
-name: Lift Device Containment 2
+name: ChromeOS Lift Device Containment
 provision_on_install: true
 trigger:
     next:
