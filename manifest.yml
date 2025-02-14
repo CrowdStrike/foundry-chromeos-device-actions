@@ -1,5 +1,5 @@
 app_id: 77d29ff9c7a24949a00fb3f343efae67
-name: Foundry Chromeos Device Actions
+name: Foundry ChromeOS Device Actions
 description: A Foundry app for managing and securing ChromeOS devices through the Google Admin API
 logo: ""
 manifest_version: "2023-05-09"
@@ -57,7 +57,7 @@ ui:
 api_integrations:
   - id: 57cb7092396f4254a4cfbc02bc84afdc
     name: chromeos-api
-    description: ""
+    description: API integration for Google Admin ChromeOS device management
     path: api-integrations/ChromeOS_API.json
 rtr_scripts: []
 collections:
@@ -167,10 +167,10 @@ functions:
     language: python
 workflows:
   - id: c8831b3c463d488bab9332d1db41aff0
-    name: Lift Device Containment 2
+    name: ChromeOS Lift Device Containment
     path: workflows/ChromeOS-_Lift_Device_Containment.yml
   - id: 04b38f2c37a04fcc8e23780ee435b935
-    name: Device Containment 2
+    name: ChromeOS Device Containment
     path: workflows/ChromeOS-_Device_Containment.yml
 parsers: []
 logscale:
