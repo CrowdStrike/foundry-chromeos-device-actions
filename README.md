@@ -85,8 +85,10 @@ Once the apps has been installed, you will need to configure the settings needed
 
 1. Navigate to **Custom apps** and select **Settings** to under the Chrome Device Actions app
 <img src="./assets/settings1.png" alt="open-app" width="500">
+
 1. Enter your Google Admin Customer ID and your Containment OU ID
 <img src="./assets/settings2.png" alt="settings" width="500">
+
 1. Click **Save** to save your settings
 
 ## Usage
