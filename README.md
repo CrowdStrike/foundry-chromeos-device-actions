@@ -6,7 +6,7 @@
 
 A Foundry application that  provides the ability to contain a device using workflow templates, enable and disable devices using a button that will appear in the Host Management sidebar for a ChromeOS device, and get device information using an API integration that can be used as part of a custom workflow.
 
-![app-image](https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder-1024x1024.png)
+![chromeos-disable](./assets/chromeos-disable.png)
 
 ## Installation
 
@@ -16,13 +16,10 @@ The application can be installed through Foundry's app import functionality. You
 
 - **Falcon Roles:**
   - Falcon Administrator
-
-- **Containment OU ID**
-  - An OU to be used to contain devices. Preferable one with more stringent policies.
-
 - **GCP Service Account Credentials**
   - The service account must be [associated with a role](https://support.google.com/a/answer/9807615?hl=en&ref_topic=9832445&sjid=12016677148987675569-NA#zippy=%2Cassign-a-role-to-a-service-account) in [Google Admin](https://admin.google.com/) that has the **Manage ChromeOS Devices** privilege
-
+- **Containment OU ID**
+  - An OU to be used to contain devices. Preferable one with more stringent policies.
 - **Google Admin Customer ID**
   - You can find this in [account settings](https://admin.google.com/u/3/ac/accountsettings)
 
@@ -32,7 +29,7 @@ The Foundry app is exported as a release artifact upon creation of new releases.
 
 1. Navigate to the [**Releases**](https://github.com/CrowdStrike/foundry-chromeos-device-actions/releases) page
 1. Download the latest `foundry-chromeos-device-actions-<version>.tar.gz` under **Assets**
-![releases](https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder-1024x1024.png)
+![releases](tbd)
 1. Save the file to your local machine
 
 ### Import the app into Foundry
@@ -45,7 +42,7 @@ The Foundry app is exported as a release artifact upon creation of new releases.
 
 1. On the Falcon console, navigate to ***Foundry*** -> ***Foundry*** -> ***App manager***
 1. Click on ***Import app***
-![import-app](https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder-1024x1024.png)
+![import-app](./assets/import-app.png)
 1. Click ***Upload file*** and select the downloaded `foundry-chromeos-device-actions-<version>.tar.gz` file from the previous section
 1. *(Optionally)* modify the app name
 1. Click ***Import*** to complete the import process
@@ -60,7 +57,7 @@ The Foundry app is exported as a release artifact upon creation of new releases.
 Release a deployment version of the app to make it available for installation and use in your CID. To release the app:
 
 1. In **App manager** click the **Open menu** (3 dots) for the deployment you want to release and select **Release** app
-![release-app](https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder-1024x1024.png)
+![release-app](./assets/release-app.png)
 1. Select **Major** for change type, add any notes you would like to and click **Release**
 
 This will take you to the **App overview** page after a successful release.
@@ -70,16 +67,31 @@ This will take you to the **App overview** page after a successful release.
 To install the Foundry app and make it available to your CID:
 
 1. In the **App overview** page, select **View in app catalog** to navigate to the app catalog for the Chrome Device Actions app
-![app-catalog](https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder-1024x1024.png)
+![app-catalog](./assets/app-catalog.png)
 1. Click **Install now** to start the installation process
-![install-app](https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder-1024x1024.png)
+![install-app](./assets/install-app.png)
 1. The application permissions will be displayed. Review them and click **Save and install** to complete the installation
+![app-permissions](./assets/permissions.png)
+1. Fill our your Google Service Account information
+   1. Enter a name for your service account credentials
+   1. Upload your service account JSON key file
+   1. Select the permission from the dropdown
+![configuration](./assets/configuration.png)
+1. Click **Install app** to complete the installation
+
+## Configure Settings
+
+Once the apps has been installed, you will need to configure the settings needed for the app to function properly.
+
+1. Navigate to **Custom apps** and select **Settings** to under the Chrome Device Actions app
+<img src="./assets/settings1.png" alt="open-app" width="500">
+1. Enter your Google Admin Customer ID and your Containment OU ID
+<img src="./assets/settings2.png" alt="settings" width="500">
+1. Click **Save** to save your settings
 
 ## Usage
 
-Once the app has been installed, you can now access the workflows via **Fusion**, the custom actions while creating a **Fusion workflow**, and the Enable/Disable button within the side panel in **Host Management**. The Enable/Disable button will only be visible if the selected device is a ChromeOS device. For non-ChromeOS devices (Windows, Linux) you will be presented with a disclaimer.
-
-<img src="https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder-1024x1024.png" alt="open-app" width="500">
+Access the workflows via **Fusion**, the custom actions while creating a **Fusion workflow**, and the Enable/Disable button within the side panel in the **Host Management** and **Endpoint detections**. The Enable/Disable button will only be visible if the selected device is a ChromeOS device. For non-ChromeOS devices (Windows, Linux) you will be presented with a disclaimer.
 
 ## Contributing
 
