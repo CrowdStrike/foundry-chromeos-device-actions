@@ -1,5 +1,5 @@
 app_id: 77d29ff9c7a24949a00fb3f343efae67
-name: Foundry Chromeos Device Actions V1 0 0
+name: Foundry Chromeos Device Actions
 description: A Foundry app for managing and securing ChromeOS devices through the Google Admin API
 logo: ""
 manifest_version: "2023-05-09"
