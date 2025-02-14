@@ -1,4 +1,4 @@
-name: Lift Device Containment 2
+name: ChromeOS Lift Device Containment
 provision_on_install: true
 trigger:
     next:
@@ -60,9 +60,9 @@ actions:
         id: functions.collection-actions.get_settings_from_collection
         properties: {}
 conditions:
-    FROM_status_is_equal_to_inactive_5c14f157_TO_activity_chromeos__change_device_status_58f476bb:
-        next:
-            - chromeos__change_device_status_58f476bb
-        expression: chromeos__get_device_info_65995209.API_Integration.Custom_chromeos-api.ChromeOS-_Get_Device_Info.body.status:'DISABLED'
-        display:
-            - Status is equal to DISABLED
+    ? FROM_status_is_equal_to_inactive_5c14f157_TO_activity_chromeos__change_device_status_58f476bb
+    : next:
+          - chromeos__change_device_status_58f476bb
+      expression: chromeos__get_device_info_65995209.API_Integration.Custom_chromeos-api.ChromeOS-_Get_Device_Info.body.status:'DISABLED'
+      display:
+          - Status is equal to DISABLED
