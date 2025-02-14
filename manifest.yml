@@ -1,5 +1,5 @@
-app_id: fedeb09f055d47d38890f89360cfa61f
-name: ChromeOS Foundry App
+app_id: 77d29ff9c7a24949a00fb3f343efae67
+name: Foundry Chromeos Device Actions V1 0 0
 description: A Foundry app for managing and securing ChromeOS devices through the Google Admin API
 logo: ""
 manifest_version: "2023-05-09"
@@ -11,7 +11,7 @@ ignored:
 ui:
   homepage: pages.chromeos_settings
   extensions:
-    - id: 64eead593a9d4891b8c8e468e0bcea28
+    - id: a2ef0f24530145c6b02376938726d308
       name: ChromeOS
       description: Disable/Re-enable ChromeOS devices
       path: ui/extensions/ChromeOS/src
@@ -55,7 +55,7 @@ ui:
         permissions: []
         ref: pages.chromeos_settings
 api_integrations:
-  - id: 827dab54623a455a9e9062d29bef085b
+  - id: 57cb7092396f4254a4cfbc02bc84afdc
     name: chromeos-api
     description: ""
     path: api-integrations/ChromeOS_API.json
@@ -87,7 +87,7 @@ auth:
   permissions: {}
   roles: []
 functions:
-  - id: a5df0f465010434196c64a78bf91f421
+  - id: bd426b518baa409fa0741125c833bd05
     name: collection-actions
     config: null
     description: A group of bla bla
@@ -101,7 +101,7 @@ functions:
         request_schema: schemas/add_to_collection_request_schema.json
         response_schema: schemas/add_to_collection_response_schema.json
         workflow_integration:
-          id: 2ec6187c3f594abeb93d7bbb5e5efefa
+          id: 50dff7df41694611993314658a35b126
           disruptive: false
           system_action: false
           tags:
@@ -116,7 +116,7 @@ functions:
         request_schema: schemas/get_ou_from_collection_request_schema.json
         response_schema: schemas/get_ou_from_collection_response_schema.json
         workflow_integration:
-          id: 5e903bdd02d84b398e4672851bac6644
+          id: 6f082fe6557748a5855ba27e7d5fcea8
           disruptive: false
           system_action: false
           tags:
@@ -132,7 +132,7 @@ functions:
         request_schema: null
         response_schema: schemas/get_settings_from_collection_response_schema.json
         workflow_integration:
-          id: 8eeefaccc7d1477999df9b811371eadc
+          id: 46c607d128214fe5a756a98118707450
           disruptive: false
           system_action: false
           tags:
@@ -142,7 +142,7 @@ functions:
             - GET
         permissions: []
     language: python
-  - id: 7dfcc120d34c4c10b5a75ff352d82cca
+  - id: 33e78de94f514b3e9217c0b1b29965ca
     name: convert-device-id
     config: null
     description: Converts chrome device device_id to a format accepted by Google admin api
@@ -156,7 +156,7 @@ functions:
         request_schema: schemas/request_schema.json
         response_schema: schemas/response_schema.json
         workflow_integration:
-          id: 5e903bdd02d84b398e4672851bac6642
+          id: ee8e41ea863f471999dfbcf9b328ccf5
           disruptive: false
           system_action: false
           tags:
@@ -166,11 +166,14 @@ functions:
         permissions: []
     language: python
 workflows:
-  - id: 0de62a688fb5454c872baaeffc354dc2
+  - id: c8831b3c463d488bab9332d1db41aff0
     name: Lift Device Containment 2
     path: workflows/ChromeOS-_Lift_Device_Containment.yml
-  - id: e6c94e021652409390d6cbc0ae0a397a
+  - id: 04b38f2c37a04fcc8e23780ee435b935
     name: Device Containment 2
     path: workflows/ChromeOS-_Device_Containment.yml
+parsers: []
 logscale:
   saved_searches: []
+lookup_files: []
+app_docs: []
