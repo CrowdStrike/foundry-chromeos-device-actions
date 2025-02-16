@@ -29,7 +29,7 @@ The Foundry app is exported as a release artifact upon creation of new releases.
 
 1. Navigate to the [**Releases**](https://github.com/CrowdStrike/foundry-chromeos-device-actions/releases) page
 1. Download the latest `foundry-chromeos-device-actions-<version>.tar.gz` under **Assets**
-![releases](tbd)
+<img src="./assets/gh-release.png" width=700 alt="GitHub Release">
 1. Save the file to your local machine
 
 ### Import the app into Foundry
@@ -83,7 +83,7 @@ To install the Foundry app and make it available to your CID:
 
 Once the apps has been installed, you will need to configure the settings needed for the app to function properly.
 
-1. Navigate to **Custom apps** and select **Settings** to under the Chrome Device Actions app
+1. Navigate to **Custom apps** and select **Settings** under the Chrome Device Actions app
 <img src="./assets/settings1.png" alt="open-app" width="500">
 
 1. Enter your Google Admin Customer ID and your Containment OU ID
@@ -97,8 +97,13 @@ Access the workflows via **Fusion**, the custom actions while creating a **Fusio
 
 ## Contributing
 
-- [Developer Guide](docs/DEVELOPER.md)
-- [Release and Deployment Process](docs/RELEASE.md)
+- [Contributing Guide](./docs/CONTRIBUTING.md)
+- [Code of Conduct](./docs/CODE_OF_CONDUCT.md)
+- Developer Guide (*coming soon*)
+
+## Security
+
+See the [SECURITY.md](./docs/SECURITY.md) file for more details about our Security Policy.
 
 ## Support
 
