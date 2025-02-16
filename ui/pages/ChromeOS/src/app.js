@@ -17,7 +17,7 @@ const falcon = new FalconApi();
       const settings = await collection.read('all');
       console.log('Loading settings:', settings);
 
-      if (settings && Object.keys(settings).length > 0) {
+      if (settings?.customer_id?.length > 0 || settings?.containment_ou?.length > 0) {
         customerIdInput.value = settings.customer_id || '';
         containmentOuInput.value = settings.containment_ou || '';
         statusMessage.innerHTML = '<span class="text-blue">Existing settings loaded</span>';

@@ -2,6 +2,9 @@ app_id: 77d29ff9c7a24949a00fb3f343efae67
 name: Foundry ChromeOS Device Actions
 description: A Foundry app for managing and securing ChromeOS devices through the Google Admin API
 logo: ""
+vendor: ""
+vendor_products: []
+use_case: ""
 manifest_version: "2023-05-09"
 ignored:
   - .+/node_modules$
@@ -29,6 +32,7 @@ ui:
         media-src: []
         object-src: []
       permissions: []
+      is_ui_builder: false
   pages:
     chromeos_settings:
       id: 8a6e888136d645bcb0d9c8e8d2bd7561
@@ -46,6 +50,7 @@ ui:
         media-src: []
         object-src: []
       permissions: []
+      is_ui_builder: false
   dashboards: {}
   navigation:
     id: a9abbb7867934379ba25802c943568f5
@@ -57,7 +62,7 @@ ui:
 api_integrations:
   - id: 57cb7092396f4254a4cfbc02bc84afdc
     name: chromeos-api
-    description: API integration for Google Admin ChromeOS device management
+    description: ""
     path: api-integrations/ChromeOS_API.json
 rtr_scripts: []
 collections:
