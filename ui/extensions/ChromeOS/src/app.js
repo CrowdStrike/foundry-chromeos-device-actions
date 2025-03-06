@@ -128,7 +128,9 @@ function setupToggleButton(deviceId, customer_id, initialStatus) {
 
       // Update UI elements
       updateButtonState(newStatus);
-      titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Device Status: ${newStatus}</h1>`;
+      titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Device Status: ${
+        newStatus === "DISABLED" ? "Disabled" : "Provisioned"
+      }</h1>`;
     } catch (error) {
       console.error("Error updating device status:", error);
       titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Error</h1>`;
@@ -140,9 +142,15 @@ function setupToggleButton(deviceId, customer_id, initialStatus) {
   }
 
   function updateButtonState(status) {
-    button.textContent = status === "DISABLED" ? "Re-enable" : "Disable";
+    const isDisabled = status === "DISABLED";
+    button.textContent = isDisabled ? "Re-enable" : "Disable";
     button.disabled = false;
     button.classList.remove("text-critical");
+
+    // Add tooltip text based on current state
+    button.title = isDisabled
+      ? "Re-enable this ChromeOS device in the Google Admin Console"
+      : "Disable this ChromeOS device in the Google Admin Console";
   }
 
   button.addEventListener("click", handleClick);
@@ -166,11 +174,19 @@ async function handleDeviceData(data, customer_id) {
   try {
     // Await the status call
     const status = await getDeviceStatus(deviceId, customer_id);
+    const isDisabled = status === "DISABLED";
 
     updateUI(
-      `Device Status: ${status}`,
-      `<button id="toggleButton" class="focusable inline-flex items-center justify-center transition truncate type-md-medium rounded flex-1 interactive-normal px-4 py-1">
-        ${status === "DISABLED" ? "Re-enable" : "Disable"}
+      // Status from the API should match what a user sees in the admin console:
+      // Disabled, Provisioned
+      `Device Status: ${isDisabled ? "Disabled" : "Provisioned"}`,
+      `<button id="toggleButton" class="focusable inline-flex items-center justify-center transition truncate type-md-medium rounded flex-1 interactive-normal px-4 py-1"
+          title="${
+            isDisabled
+              ? "Re-enable this ChromeOS device in the Google Admin Console"
+              : "Disable this ChromeOS device in the Google Admin Console"
+          }">
+        ${isDisabled ? "Re-enable" : "Disable"}
       </button>`
     );
 
