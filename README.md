@@ -18,8 +18,8 @@ The application can be installed through Foundry's app import functionality. You
   - Falcon Administrator
 - **GCP Service Account Credentials**
   - The service account must be [associated with a role](https://support.google.com/a/answer/9807615?hl=en&ref_topic=9832445&sjid=12016677148987675569-NA#zippy=%2Cassign-a-role-to-a-service-account) in [Google Admin](https://admin.google.com/) that has the **Manage ChromeOS Devices** privilege
-- **Containment OU ID**
-  - An OU to be used to contain devices. Preferable one with more stringent policies.
+- **Containment OU Path**
+  - The path to a dedicated Organizational Unit (OU) for device containment, ideally one that enforces stricter security controls.
 - **Google Admin Customer ID**
   - You can find this in [account settings](https://admin.google.com/u/3/ac/accountsettings)
 
@@ -86,7 +86,7 @@ Once the apps has been installed, you will need to configure the settings needed
 1. Navigate to **Custom apps** and select **Settings** under the Chrome Device Actions app
 <img src="./assets/settings1.png" alt="open-app" width="500">
 
-1. Enter your Google Admin Customer ID and your Containment OU ID
+1. Enter your Google Admin Customer ID and your Containment OU Path
 <img src="./assets/settings2.png" alt="settings" width="500">
 
 1. Click **Save** to save your settings
