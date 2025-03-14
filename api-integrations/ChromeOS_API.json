@@ -18,7 +18,7 @@
   },
   "info": {
     "contact": {
-      "email": "gax.theodorio@crowdstrike.com"
+      "email": "cloud-integrations@crowdstrike.com"
     },
     "title": "chromeos-api",
     "version": ""
@@ -27,7 +27,7 @@
   "paths": {
     "/admin/directory/v1/customer/{customerId}/devices/chromeos/moveDevicesToOu": {
       "post": {
-        "operationId": "ChromeOS- Move Device to OU",
+        "operationId": "ChromeOS - Move Device to OU",
         "parameters": [
           {
             "in": "path",
@@ -72,9 +72,9 @@
         "responses": null,
         "x-cs-operation-config": {
           "workflow": {
-            "description": "ChromeOS- Move Device to OU",
+            "description": "ChromeOS - Move Device to OU",
             "expose_to_workflow": true,
-            "name": "ChromeOS- Move Device to OU",
+            "name": "ChromeOS - Move Device to OU",
             "system": false
           }
         }
@@ -82,7 +82,7 @@
     },
     "/admin/directory/v1/customer/{customerId}/devices/chromeos/{deviceId}": {
       "get": {
-        "operationId": "ChromeOS- Get Device Info",
+        "operationId": "ChromeOS - Get Device Info",
         "parameters": [
           {
             "in": "path",
@@ -433,9 +433,9 @@
         },
         "x-cs-operation-config": {
           "workflow": {
-            "description": "ChromeOS- Get Device Info",
+            "description": "ChromeOS - Get Device Info",
             "expose_to_workflow": true,
-            "name": "ChromeOS- Get Device Info",
+            "name": "ChromeOS - Get Device Info",
             "system": false
           }
         }
@@ -443,7 +443,7 @@
     },
     "/admin/directory/v1/customer/{customer_id}/devices/chromeos:batchChangeStatus": {
       "post": {
-        "operationId": "ChromeOS- Change Device Status",
+        "operationId": "ChromeOS - Change Device Status",
         "parameters": [
           {
             "in": "path",
@@ -519,9 +519,9 @@
         },
         "x-cs-operation-config": {
           "workflow": {
-            "description": "ChromeOS- Change Device Status",
+            "description": "ChromeOS - Change Device Status",
             "expose_to_workflow": true,
-            "name": "ChromeOS- Change Device Status",
+            "name": "ChromeOS - Change Device Status",
             "system": false
           }
         }

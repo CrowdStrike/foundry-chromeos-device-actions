@@ -3,12 +3,14 @@
     "title": "",
     "type": "object",
     "properties": {
-        "customer_id": {
-            "type": "string",
-            "title": "Google Customer ID"
+        "status": {
+            "type": "string"
+        },
+        "message": {
+            "type": "string"
         }
     },
     "required": [
-        "customer_id"
+        "status"
     ]
 }

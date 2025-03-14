@@ -41,7 +41,7 @@ async function getDeviceStatus(deviceId, customer_id) {
     const formattedDeviceId = convertDeviceId(deviceId);
     const getDeviceInfo = falcon.apiIntegration({
       definitionId: "chromeos-api",
-      operationId: "ChromeOS- Get Device Info",
+      operationId: "ChromeOS - Get Device Info",
     });
 
     const response = await getDeviceInfo.execute({
@@ -79,7 +79,7 @@ async function handleDeviceAction(action, deviceId, customer_id) {
     const formattedDeviceId = convertDeviceId(deviceId);
     const changeStatus = falcon.apiIntegration({
       definitionId: "chromeos-api",
-      operationId: "ChromeOS- Change Device Status",
+      operationId: "ChromeOS - Change Device Status",
     });
 
     await changeStatus.execute({
