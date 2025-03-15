@@ -9,7 +9,11 @@
         },
         "ou_path": {
             "type": "string",
-            "title": "Target OU Path"
+            "title": "Target OU Path",
+            "x-cs-pivot": {
+                "entity": "plugins.proxy.chromeos-api.ChromeOS - List Organizational Units",
+                "searchable": true
+            }
         }
     },
     "required": [
