@@ -61,7 +61,11 @@
             "required": true,
             "schema": {
               "title": "OrgUnitPath",
-              "type": "string"
+              "type": "string",
+              "x-cs-pivot": {
+                "entity": "plugins.proxy.chromeos-api.ChromeOS - List Organizational Units",
+                "searchable": true
+              }
             }
           }
         ],
