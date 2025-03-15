@@ -647,6 +647,12 @@
           }
         },
         "x-cs-operation-config": {
+          "autocomplete": {
+            "display_field": "orgUnitPath",
+            "id_field": "orgUnitPath",
+            "iterable_path": "organizationUnits",
+            "search_field": "params.query.orgUnitPath"
+          },
           "workflow": {
             "description": "ChromeOS - List Organizational Units",
             "expose_to_workflow": false,
