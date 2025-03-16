@@ -19,21 +19,82 @@
     "schemas": {
       "$config": {
         "properties": {
+          "auth": {
+            "properties": {
+              "service_account": {
+                "title": "Google service account json key",
+                "x-cs-ui": {
+                  "component": "workflow-extension-file-upload",
+                  "encoding": "base64",
+                  "accept": [
+                    ".yaml",
+                    ".json"
+                  ]
+                },
+                "properties": {
+                  "contents": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "file_name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "subject": {
+                "title": "Google subject email to impersonate",
+                "type": "string"
+              }
+            },
+            "required": [
+              "service_account"
+            ],
+            "type": "object"
+          },
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "title": "Name"
+          },
           "params": {
             "properties": {
               "path": {
-                "customerId": {
-                  "type": "string",
-                  "description": "The unique ID for your Google Workspace account"
-                }
+                "properties": {
+                  "customerId": {
+                    "type": "string",
+                    "title": "Customer ID",
+                    "description": "The unique ID for your Google Workspace account"
+                  }
+                },
+                "required": [
+                  "customerId"
+                ],
+                "type": "object"
               }
-            }
+            },
+            "type": "object",
+            "required": [
+              "path"
+            ]
           }
-        }
+        },
+        "required": [
+          "name",
+          "auth",
+          "params"
+        ],
+        "type": "object",
+        "title": "ChromeOS workspace admin",
+        "x-cs-order": [
+          "name",
+          "auth",
+          "params"
+        ]
       }
     }
   },
-    "info": {
+  "info": {
     "contact": {
       "email": "cloud-integrations@crowdstrike.com"
     },
@@ -49,7 +110,7 @@
           {
             "in": "path",
             "name": "customerId",
-            "required": true,
+            "required": false,
             "schema": {
               "title": "Customer ID",
               "type": "string"
@@ -61,11 +122,7 @@
             "required": true,
             "schema": {
               "title": "OrgUnitPath",
-              "type": "string",
-              "x-cs-pivot": {
-                "entity": "plugins.proxy.chromeos-api.ChromeOS - List Organizational Units",
-                "searchable": true
-              }
+              "type": "string"
             }
           }
         ],
@@ -108,7 +165,7 @@
           {
             "in": "path",
             "name": "customerId",
-            "required": true,
+            "required": false,
             "schema": {
               "title": "Customer ID",
               "type": "string"
@@ -470,7 +527,7 @@
           {
             "in": "path",
             "name": "customerId",
-            "required": true,
+            "required": false,
             "schema": {
               "title": "Customer ID",
               "type": "string"
@@ -556,7 +613,7 @@
           {
             "in": "path",
             "name": "customerId",
-            "required": true,
+            "required": false,
             "schema": {
               "title": "Customer ID",
               "type": "string"
@@ -652,12 +709,6 @@
           }
         },
         "x-cs-operation-config": {
-          "autocomplete": {
-            "display_field": "orgUnitPath",
-            "id_field": "orgUnitPath",
-            "iterable_path": "organizationUnits",
-            "search_field": "params.query.orgUnitPath"
-          },
           "workflow": {
             "description": "ChromeOS - List Organizational Units",
             "expose_to_workflow": false,

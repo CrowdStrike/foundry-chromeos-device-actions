@@ -1,22 +1,22 @@
 # pylint: disable=missing-module-docstring,missing-function-docstring
 # flake8: noqa
-import json
 import uuid
 from logging import Logger
 from typing import Dict, Any
 from crowdstrike.foundry.function import Function, Request, Response, APIError
-from falconpy import CustomStorage, APIIntegrations
+from falconpy import APIIntegrations
 
 # pylint: disable=invalid-name
 func = Function.instance()
 
-SETTINGS_COLLECTION_NAME = "settings"
 DEFINITION_NAME = "chromeos-api"
 MOVE_DEVICE_OP_NAME = "ChromeOS - Move Device to OU"
 
 
 @func.handler(method="POST", path="/move_chromeos_device")
-def move_chromeos_device(request: Request, logger: Logger) -> Response:
+def on_create(
+    request: Request, config: [dict[str, any], None], logger: Logger
+) -> Response:
     logger.info("Processing request to move ChromeOS device")
     # Extract parameters from request body
     device_id = request.body.get("device_id")
@@ -28,42 +28,49 @@ def move_chromeos_device(request: Request, logger: Logger) -> Response:
         err_msg = "Missing required parameters: device_id and ou_path"
         return create_error_response(400, err_msg)
 
-    # Grab customer ID and validate
-    customer_id = get_customer_id()
-    if not customer_id:
-        err_msg = "Failed to retrieve customer ID from settings collection"
-        logger.error(err_msg)
-        return create_error_response(400, err_msg)
-
     # Make API Integration call to Move Device
     falcon_api_int = APIIntegrations()
-    response = falcon_api_int.execute_command(
-        definition_id=DEFINITION_NAME,
-        operation_id=MOVE_DEVICE_OP_NAME,
-        path={
-            "customerId": customer_id,
-        },
-        query={
-            "orgUnitPath": ou_path,
-        },
-        data={"deviceIds": [convert_device_id(device_id)]},
-    )
+    converted_device_id = convert_device_id(device_id)
+    # logger.info(f"Converted device ID: {converted_device_id}")
+    body_payload = {
+        "resources": [
+            {
+                "definition_id": DEFINITION_NAME,
+                "operation_id": MOVE_DEVICE_OP_NAME,
+                "request": {
+                    "json": {"deviceIds": [converted_device_id]},
+                    "params": {"query": {"orgUnitPath": ou_path}},
+                },
+            }
+        ]
+    }
+    response = falcon_api_int.execute_command(body=body_payload)
+    logger.info(f"API response content: {response}")
 
-    # Check if response contains an error
-    if isinstance(response, dict) and "error" in response:
-        error_data = response.get("error", {})
-        error_code = error_data.get("code", 500)
-        error_message = extract_error_message(error_data)
-        logger.error(f"API returned an error: {error_message}")
-        return create_error_response(error_code, error_message)
+    # Check for errors in the response
+    if response.get("body", {}).get("errors"):
+        errors = response["body"]["errors"]
+        logger.error(f"API returned errors: {errors}")
+        return create_error_response(
+            500, f"Error moving device: {errors[0].get('message', 'Unknown error')}"
+        )
 
-    # If we got here, the operation was successful
+    # Check resource status code
+    resources = response.get("body", {}).get("resources", [])
+    if not resources:
+        logger.error("No resources in response")
+        return create_error_response(500, "No response from API")
+
+    # Get status code from the first resource
+    status_code = resources[0].get("status_code")
+    if not status_code or status_code >= 400:
+        logger.error(f"Resource operation failed with status {status_code}")
+        return create_error_response(status_code or 500, "Failed to move device")
+
+    # Operation was successful
     return Response(
         code=200,
-        body={
-            "status": "OK",
-            "message": "Device moved successfully"
-        },
+        body={"status": "OK", "message": "Device moved successfully"},
     )
 
 
@@ -111,28 +118,6 @@ def create_error_response(code: int, message: str) -> Response:
             )
         ],
     )
-
-
-def get_customer_id() -> str:
-    """Return Chrome Customer ID from settings collection
-
-    Args:
-        None
-
-    Returns:
-        str: The customer ID string if found, empty string otherwise.
-    """
-    falcon_custom_storage = CustomStorage()
-
-    key = "all"
-
-    response = falcon_custom_storage.GetObject(
-        collection_name=SETTINGS_COLLECTION_NAME, object_key=key
-    )
-
-    results = json.loads(response.decode("utf-8"))
-
-    return results.get("customer_id", "")
 
 
 def convert_device_id(device_id: str) -> str:

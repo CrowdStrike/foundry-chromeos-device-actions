@@ -12,7 +12,7 @@ ignored:
     - .+/venv$
     - .+/venv/.+
 ui:
-    homepage: pages.chromeos_settings
+    homepage: ""
     extensions:
         - id: 5dc09de207114bd8867c73d0063feb04
           name: ChromeOS
@@ -33,31 +33,9 @@ ui:
             object-src: []
           permissions: []
           is_ui_builder: false
-    pages:
-        chromeos_settings:
-            id: fad6bd01b9734933a194794902d83cfb
-            name: Settings
-            description: Set your ChromeOS Customer ID and OU for containment
-            path: ui/pages/ChromeOS/src
-            entrypoint: ui/pages/ChromeOS/src/index.html
-            content_security_policy:
-                connect-src: []
-                style-src: []
-                style-src-elem: []
-                script-src: []
-                form-action: []
-                img-src: []
-                media-src: []
-                object-src: []
-            permissions: []
+    pages: {}
     dashboards: {}
-    navigation:
-        id: 1f84402675824ce4b7df6e6bbba8e91c
-        links:
-            - path: chromeos-settings
-              name: Settings
-              permissions: []
-              ref: pages.chromeos_settings
+    navigation: {}
 api_integrations:
     - id: a00f0a21f9114fcf8ec0b3f863bf3844
       name: chromeos-api
@@ -79,26 +57,6 @@ auth:
     permissions: {}
     roles: []
 functions:
-    - id: 7a15ac5dd7b34dac8c276cef3fe2812f
-      name: collection-actions
-      config: null
-      description: Work with collections and settings for ChromeOS devices
-      path: functions/collection-actions
-      environment_variables: {}
-      handlers:
-        - name: get_settings_from_collection
-          description: Retrieves the ChromeOS settings from a collection.
-          method: GET
-          api_path: /get_settings_from_collection
-          request_schema: null
-          response_schema: schemas/get_settings_from_collection_response_schema.json
-          workflow_integration:
-            id: 2cdd5d9efc1c47679a35b27cbeaeb2ca
-            disruptive: false
-            system_action: false
-            tags: []
-          permissions: []
-      language: python
     - id: a09a40c73af24b53ac6af396d6ea9fb6
       name: move-chromeos-device
       config: null
