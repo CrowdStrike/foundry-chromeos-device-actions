@@ -15,6 +15,22 @@
         },
         "type": "oauth2"
       }
+    },
+    "schemas": {
+      "$config": {
+        "properties": {
+          "params": {
+            "properties": {
+              "path": {
+                "customerId": {
+                  "type": "string",
+                  "description": "The unique ID for your Google Workspace account"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
     "info": {
@@ -45,7 +61,11 @@
             "required": true,
             "schema": {
               "title": "OrgUnitPath",
-              "type": "string"
+              "type": "string",
+              "x-cs-pivot": {
+                "entity": "plugins.proxy.chromeos-api.ChromeOS - List Organizational Units",
+                "searchable": true
+              }
             }
           }
         ],
