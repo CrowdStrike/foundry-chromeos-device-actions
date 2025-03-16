@@ -7,35 +7,125 @@ const falcon = new FalconApi();
 
   const customerIdInput = document.getElementById('customerId');
   const containmentOuInput = document.getElementById('containmentOu');
+  const containmentOuDropdown = document.getElementById('containmentOuDropdown');
+  const testConnectionButton = document.getElementById('testConnectionButton');
   const saveButton = document.getElementById('saveButton');
   const statusMessage = document.getElementById('statusMessage');
   const collection = falcon.collection({ collection: 'settings' });
 
-  // Function to load existing settings
-  async function loadSettings() {
-    try {
-      const settings = await collection.read('all');
-      console.log('Loading settings:', settings);
+  // Helper function to set status message with Toucan CSS color classes
+  function setStatus(message, type = 'info') {
+    // Remove any existing color classes
+    statusMessage.className = "mt-4 text-sm";
 
-      if (settings?.customer_id?.length > 0 || settings?.containment_ou?.length > 0) {
-        customerIdInput.value = settings.customer_id || '';
-        containmentOuInput.value = settings.containment_ou || '';
-        statusMessage.innerHTML = '<span class="text-blue">Existing settings loaded</span>';
+    // Add appropriate Toucan CSS color class based on message type
+    switch(type) {
+      case 'success':
+        statusMessage.classList.add('text-positive');
+        break;
+      case 'error':
+        statusMessage.classList.add('text-critical');
+        break;
+      case 'warning':
+        statusMessage.classList.add('text-code-base-64');
+        break;
+      case 'info':
+      default:
+        statusMessage.classList.add('text-blue');
+    }
+
+    statusMessage.textContent = message;
+  }
+
+  async function loadOrganizationalUnits(customerId) {
+    if (!customerId) {
+      setStatus('Please enter a Customer ID first', 'warning');
+      return false;
+    }
+
+    try {
+      setStatus('Testing connection and loading OUs...', 'info');
+
+      const apiIntegration = falcon.apiIntegration({
+        definitionId: "chromeos-api",
+        operationId: "ChromeOS - List Organizational Units",
+      });
+
+      const response = await apiIntegration.execute({
+        request: {
+          params: {
+            path: {
+              customerId: customerId
+            },
+            query: {
+              type: 'allIncludingParent'
+            }
+          }
+        }
+      });
+
+      if (response?.resources?.[0]?.status_code === 200) {
+        const responseBody = JSON.parse(response.resources[0].response_body);
+        const organizationUnits = responseBody.organizationUnits || [];
+
+        if (organizationUnits.length > 0) {
+          containmentOuDropdown.innerHTML = '<option value="">Select an Organizational Unit</option>';
+
+          organizationUnits.forEach(ou => {
+            const option = document.createElement('option');
+            option.value = ou.orgUnitPath;
+            option.textContent = `${ou.name} (${ou.orgUnitPath})`;
+            containmentOuDropdown.appendChild(option);
+          });
+
+          containmentOuDropdown.style.display = 'block';
+          containmentOuInput.style.display = 'none';
+
+          setStatus('Connection successful! Please select an OU.', 'success');
+          return true;
+        }
       }
+
+      setStatus('Connection successful, but no OUs found. Please enter OU path manually.', 'warning');
+      return false;
     } catch (error) {
-      // At this point it's probably the first time, so we can just ignore and log it
-      console.log('No settings found:', error);
-      statusMessage.innerHTML = '<span class="text-blue">No existing settings found</span>';
+      console.error('Error loading OUs:', error);
+      setStatus(`Connection failed: ${error.message}. Please check your Customer ID.`, 'error');
+      containmentOuInput.style.display = 'block';
+      containmentOuDropdown.style.display = 'none';
+      return false;
     }
   }
 
-  // Function to save settings
+  async function loadSettings() {
+    try {
+      const settings = await collection.read('all');
+
+      if (settings?.customer_id?.length > 0) {
+        customerIdInput.value = settings.customer_id;
+
+        if (settings?.containment_ou?.length > 0) {
+          containmentOuInput.value = settings.containment_ou;
+        }
+
+        setStatus('Existing settings loaded. Click "Test Connection" to load organizational units.', 'info');
+      } else {
+        setStatus('Please configure your settings', 'info');
+      }
+    } catch (error) {
+      console.log('No settings found:', error);
+      setStatus('Please configure your settings', 'info');
+    }
+  }
+
   async function saveSettings() {
     const customer_id = customerIdInput.value.trim();
-    const containment_ou = containmentOuInput.value.trim();
+    const containment_ou = containmentOuDropdown.style.display !== 'none' && containmentOuDropdown.value ?
+                           containmentOuDropdown.value :
+                           containmentOuInput.value.trim();
 
     if (!customer_id || !containment_ou) {
-      statusMessage.innerHTML = '<span class="text-critical">Please fill in all fields</span>';
+      setStatus('Please fill in all fields', 'error');
       return;
     }
 
@@ -45,17 +135,19 @@ const falcon = new FalconApi();
         "containment_ou": containment_ou,
       };
       await collection.write('all', data);
-      console.log('Settings saved:', data);
 
-      statusMessage.innerHTML = '<span class="text-blue">Settings saved successfully!</span>';
+      setStatus('Settings saved successfully!', 'success');
     } catch (error) {
-      statusMessage.innerHTML = `<span class="text-critical">Error saving settings: ${error.message}</span>`;
+      setStatus(`Error saving settings: ${error.message}`, 'error');
     }
   }
 
-  // Add event listener for save button
+  testConnectionButton.addEventListener('click', async () => {
+    const customerId = customerIdInput.value.trim();
+    await loadOrganizationalUnits(customerId);
+  });
+
   saveButton.addEventListener('click', saveSettings);
 
-  // Load existing settings when the app starts
   await loadSettings();
 })();
