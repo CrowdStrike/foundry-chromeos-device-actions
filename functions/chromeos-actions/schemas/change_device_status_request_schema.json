@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "",
+    "type": "object",
+    "properties": {
+        "device_id": {
+            "type": "string",
+            "title": "Device ID (AID)"
+        },
+        "device_status": {
+            "type": "string",
+            "enum": ["Disabled", "Provisioned"],
+            "title": "Device Status"
+        }
+    },
+    "required": [
+        "device_id",
+        "device_status"
+    ]
+}
