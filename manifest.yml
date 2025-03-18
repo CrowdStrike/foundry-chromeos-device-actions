@@ -72,13 +72,13 @@ functions:
                 - ChromeOS FaaS
           permissions: []
         - name: Change ChromeOS Device Status
-          description: Disable/Re-enable ChromeOS device
+          description: Disable/Re-enable ChromeOS device function
           method: POST
           api_path: /change_device_status
           request_schema: schemas/change_device_status_request_schema.json
           response_schema: schemas/change_device_status_response_schema.json
           workflow_integration:
-            id: 3f32706c06d4487994b76f1f8a1368ec
+            id: 4d99854576d84aada163fc790ee6dd49
             disruptive: false
             system_action: false
             tags:
