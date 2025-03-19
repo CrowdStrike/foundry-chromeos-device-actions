@@ -37,16 +37,27 @@ async function getDeviceStatus(deviceId) {
       },
     });
 
+    console.log("Device status response:", response);
+
     if (response.resources?.[0]?.status_code === 200) {
-      // return the status
       console.log(
-        "Device status response:",
+        "Device status response body:",
         response.resources[0].response_body
       );
       return response.resources[0].response_body.status;
+    } else {
+      // Handle non-200 status codes
+      const statusCode = response.resources?.[0]?.status_code || "unknown";
+      const errorBody = response.resources?.[0]?.response_body || {};
+
+      throw new Error(
+        `API returned status ${statusCode}: ${JSON.stringify(errorBody)}`
+      );
     }
   } catch (error) {
     console.error("Error getting device status:", error);
+    // Preserve the original error but add more context
+    error.message = `ChromeOS API Error: ${error.message}`;
     throw error;
   }
 }
@@ -154,8 +165,6 @@ async function handleDeviceData(data) {
     const isDisabled = status === "DISABLED";
 
     updateUI(
-      // Status from the API should match what a user sees in the admin console:
-      // Disabled, Provisioned
       `Device Status: ${isDisabled ? "Disabled" : "Provisioned"}`,
       `<button id="toggleButton" class="focusable inline-flex items-center justify-center transition truncate type-md-medium rounded flex-1 interactive-normal px-4 py-1"
           title="${
@@ -170,7 +179,22 @@ async function handleDeviceData(data) {
     setupToggleButton(deviceId, status);
   } catch (error) {
     console.error("Error getting device status:", error);
-    updateUI("Error", "Failed to get device status: " + error.message, true);
+
+    // Enhanced error handling with specific messages for common API issues
+    let errorMessage = "Failed to get device status: " + error.message;
+
+    // Check for common API error patterns
+    if (error.status === 401 || error.message.includes("unauthorized")) {
+      errorMessage = "Authentication failed: Please check your API credentials";
+    } else if (error.status === 403 || error.message.includes("forbidden")) {
+      errorMessage =
+        "Access denied: Your account doesn't have permission to perform this operation";
+    } else if (error.status === 404 || error.message.includes("not found")) {
+      errorMessage =
+        "Resource not found: The ChromeOS API may not be configured correctly";
+    }
+
+    updateUI("Error", errorMessage, true);
   }
 }
 

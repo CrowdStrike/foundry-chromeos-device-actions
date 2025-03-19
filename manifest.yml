@@ -15,8 +15,8 @@ ui:
     homepage: ""
     extensions:
         - id: bf77a2c69da74a02a05bde0d6e14ee6b
-          name: ChromeOS
-          description: Disable/Re-enable ChromeOS devices
+          name: ChromeOS Response Actions
+          description: Manages ChromeOS devices within your Google Workspace organization.
           path: ui/extensions/ChromeOS/src
           entrypoint: ui/extensions/ChromeOS/src/index.html
           sockets:

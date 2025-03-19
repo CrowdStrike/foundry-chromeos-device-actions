@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring,missing-function-docstring
+# pylint: disable=missing-module-docstring,missing-function-docstring,unused-argument
 # flake8: noqa
 import uuid
 from logging import Logger
@@ -16,7 +16,7 @@ CHANGE_STATUS_OP_NAME = "ChromeOS - Change Device Status"
 
 @func.handler(method="POST", path="/move_chromeos_device")
 def move_chromeos_device(
-    request: Request, config: [dict[str, any], None], logger: Logger
+    request: Request, config: [dict[str, any], None], logger: Logger # type: ignore
 ) -> Response:
     logger.info("Processing request to move ChromeOS device")
     # Extract parameters from request body
@@ -77,12 +77,10 @@ def move_chromeos_device(
 
 @func.handler(method="POST", path="/change_device_status")
 def change_device_status(
-    request: Request, config: [dict[str, any], None], logger: Logger
+    request: Request, config: [dict[str, any], None], logger: Logger # type: ignore
 ) -> Response:
     logger.info("Processing request to change device status")
-    # Inputs required:
-    # Device ID
-    # Status: Disabled/Provisioned
+    # Extract parameters from request body
     device_id = request.body.get("device_id")
     status = request.body.get("device_status")
 

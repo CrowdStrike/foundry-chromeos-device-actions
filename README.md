@@ -4,7 +4,12 @@
 
 # ChromeOS Device Actions (Foundry app)
 
-A Foundry application that  provides the ability to contain a device using workflow templates, enable and disable devices using a button that will appear in the Host Management sidebar for a ChromeOS device, and get device information using an API integration that can be used as part of a custom workflow.
+A Foundry application that provides response actions for ChromeOS devices. This application enables security teams to rapidly respond to device incidents through:
+
+1. UI-driven response actions directly from the Host Management and Endpoint Detection sidebar
+2. Automated workflow templates for device containment and state management
+
+The current implementation allows users to contain, disable, and re-enable ChromeOS devices, with additional response capabilities planned for future releases.
 
 ![chromeos-disable](./assets/chromeos-disable.png)
 
@@ -34,6 +39,12 @@ The application can be installed through Foundry's app import functionality. You
        - `Organizational Units -> read` - For viewing organizational units
 - **Target Containment OU Path**
   - The path to a dedicated Organizational Unit (OU) for device containment, ideally one that enforces stricter security controls.
+    > Paths can be specified as either the **full** path of the organizational unit or its **ID**.
+    >
+    > Examples:
+    >
+    >   - /MyParent/ChromeOS_Quarantine
+    >   - id:01234567890
 - **Google Admin Customer ID**
   - You can find this in [account settings](https://admin.google.com/u/3/ac/accountsettings)
 
@@ -139,7 +150,6 @@ This workflow action takes the device ID from the `EPP Detection` trigger and th
 
 - [Contributing Guide](./docs/CONTRIBUTING.md)
 - [Code of Conduct](./docs/CODE_OF_CONDUCT.md)
-- Developer Guide (*coming soon*)
 
 ## Security
 
