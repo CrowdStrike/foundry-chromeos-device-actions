@@ -34,6 +34,12 @@ The application can be installed through Foundry's app import functionality. You
        - `Organizational Units -> read` - For viewing organizational units
 - **Target Containment OU Path**
   - The path to a dedicated Organizational Unit (OU) for device containment, ideally one that enforces stricter security controls.
+    > Paths can be specified as either the **full** path of the organizational unit or its **ID**.
+    >
+    > Examples:
+    >
+    >   - /MyParent/ChromeOS_Quarantine
+    >   - id:01234567890
 - **Google Admin Customer ID**
   - You can find this in [account settings](https://admin.google.com/u/3/ac/accountsettings)
 
