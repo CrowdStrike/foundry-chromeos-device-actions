@@ -7,7 +7,7 @@
 A Foundry application that provides response actions for ChromeOS devices. This application enables security teams to rapidly respond to device incidents through:
 
 1. UI-driven response actions directly from the Host Management and Endpoint Detection sidebar
-2. Automated workflow templates for device containment and state management
+2. Creating automated workflow templates for device containment and state management
 
 The current implementation allows users to contain, disable, and re-enable ChromeOS devices, with additional response capabilities planned for future releases.
 
