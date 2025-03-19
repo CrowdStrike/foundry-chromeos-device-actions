@@ -16,8 +16,8 @@ jobs:
           VERSION=${{ github.event.release.tag_name }}
           TAR_NAME="${PROJECT_NAME}-${VERSION}.tar.gz"
           mkdir out
-          cp -r LICENSE manifest.yml collections functions ui workflows api-integrations out
-          echo "$(VERSION)" > out/VERSION
+          cp -r LICENSE manifest.yml functions ui api-integrations out
+          echo "${VERSION}" > out/VERSION
           tar -cvzf $TAR_NAME -C out .
 
       - name: Upload Release Assets

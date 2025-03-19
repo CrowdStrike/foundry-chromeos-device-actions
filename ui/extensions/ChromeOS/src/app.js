@@ -2,23 +2,6 @@ import FalconApi from "@crowdstrike/foundry-js";
 
 const falcon = new FalconApi();
 
-async function loadSettings() {
-  try {
-    console.log("Attempting to read settings...");
-    const settings = await falcon
-      .collection({ collection: "settings" })
-      .read("all");
-    console.log("Settings read complete:", settings);
-    if (!settings || !settings.customer_id) {
-      throw new Error("No customer ID configured");
-    }
-    return settings;
-  } catch (error) {
-    console.error("Error loading settings:", error);
-    throw error;
-  }
-}
-
 function updateUI(titleText, content, isError = false) {
   const titleDiv = document.getElementById("titleDiv");
   const dataDiv = document.getElementById("dataDiv");
@@ -36,19 +19,18 @@ function convertDeviceId(deviceId) {
   return deviceId.replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, "$1-$2-$3-$4-$5");
 }
 
-async function getDeviceStatus(deviceId, customer_id) {
+async function getDeviceStatus(deviceId) {
   try {
     const formattedDeviceId = convertDeviceId(deviceId);
     const getDeviceInfo = falcon.apiIntegration({
       definitionId: "chromeos-api",
-      operationId: "ChromeOS- Get Device Info",
+      operationId: "ChromeOS - Get Device Info",
     });
 
     const response = await getDeviceInfo.execute({
       request: {
         params: {
           path: {
-            customerId: customer_id,
             deviceId: formattedDeviceId,
           },
         },
@@ -69,7 +51,7 @@ async function getDeviceStatus(deviceId, customer_id) {
   }
 }
 
-async function handleDeviceAction(action, deviceId, customer_id) {
+async function handleDeviceAction(action, deviceId) {
   console.log(`Handling device action: ${action} for device: ${deviceId}`);
   try {
     const deviceActions = {
@@ -79,16 +61,11 @@ async function handleDeviceAction(action, deviceId, customer_id) {
     const formattedDeviceId = convertDeviceId(deviceId);
     const changeStatus = falcon.apiIntegration({
       definitionId: "chromeos-api",
-      operationId: "ChromeOS- Change Device Status",
+      operationId: "ChromeOS - Change Device Status",
     });
 
     await changeStatus.execute({
       request: {
-        params: {
-          path: {
-            customer_id: customer_id,
-          },
-        },
         json: {
           changeChromeOsDeviceStatusAction: deviceActions[action],
           deviceIds: [formattedDeviceId],
@@ -102,7 +79,7 @@ async function handleDeviceAction(action, deviceId, customer_id) {
   }
 }
 
-function setupToggleButton(deviceId, customer_id, initialStatus) {
+function setupToggleButton(deviceId, initialStatus) {
   const titleDiv = document.getElementById("titleDiv");
   const button = document.getElementById("toggleButton");
   if (!button) return;
@@ -112,7 +89,7 @@ function setupToggleButton(deviceId, customer_id, initialStatus) {
 
   async function handleClick() {
     try {
-      const currentStatus = await getDeviceStatus(deviceId, customer_id);
+      const currentStatus = await getDeviceStatus(deviceId);
       const action = currentStatus === "DISABLED" ? "enable" : "disable";
 
       // Show loading state
@@ -121,14 +98,16 @@ function setupToggleButton(deviceId, customer_id, initialStatus) {
         action === "disable" ? "Disabling" : "Enabling"
       }...`;
 
-      await handleDeviceAction(action, deviceId, customer_id);
+      await handleDeviceAction(action, deviceId);
 
       // Get the new status after the action
-      const newStatus = await getDeviceStatus(deviceId, customer_id);
+      const newStatus = await getDeviceStatus(deviceId);
 
       // Update UI elements
       updateButtonState(newStatus);
-      titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Device Status: ${newStatus}</h1>`;
+      titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Device Status: ${
+        newStatus === "DISABLED" ? "Disabled" : "Provisioned"
+      }</h1>`;
     } catch (error) {
       console.error("Error updating device status:", error);
       titleDiv.innerHTML = `<h1 class="text-titles-and-attributes">Error</h1>`;
@@ -140,15 +119,21 @@ function setupToggleButton(deviceId, customer_id, initialStatus) {
   }
 
   function updateButtonState(status) {
-    button.textContent = status === "DISABLED" ? "Re-enable" : "Disable";
+    const isDisabled = status === "DISABLED";
+    button.textContent = isDisabled ? "Re-enable" : "Disable";
     button.disabled = false;
     button.classList.remove("text-critical");
+
+    // Add tooltip text based on current state
+    button.title = isDisabled
+      ? "Re-enable this ChromeOS device in the Google Admin Console"
+      : "Disable this ChromeOS device in the Google Admin Console";
   }
 
   button.addEventListener("click", handleClick);
 }
 
-async function handleDeviceData(data, customer_id) {
+async function handleDeviceData(data) {
   const platformName =
     data.detection?.device?.platform_name || data.platform_name;
   const deviceId = data.detection?.device?.device_id || data.device_id;
@@ -165,16 +150,24 @@ async function handleDeviceData(data, customer_id) {
 
   try {
     // Await the status call
-    const status = await getDeviceStatus(deviceId, customer_id);
+    const status = await getDeviceStatus(deviceId);
+    const isDisabled = status === "DISABLED";
 
     updateUI(
-      `Device Status: ${status}`,
-      `<button id="toggleButton" class="focusable inline-flex items-center justify-center transition truncate type-md-medium rounded flex-1 interactive-normal px-4 py-1">
-        ${status === "DISABLED" ? "Re-enable" : "Disable"}
+      // Status from the API should match what a user sees in the admin console:
+      // Disabled, Provisioned
+      `Device Status: ${isDisabled ? "Disabled" : "Provisioned"}`,
+      `<button id="toggleButton" class="focusable inline-flex items-center justify-center transition truncate type-md-medium rounded flex-1 interactive-normal px-4 py-1"
+          title="${
+            isDisabled
+              ? "Re-enable this ChromeOS device in the Google Admin Console"
+              : "Disable this ChromeOS device in the Google Admin Console"
+          }">
+        ${isDisabled ? "Re-enable" : "Disable"}
       </button>`
     );
 
-    setupToggleButton(deviceId, customer_id, status);
+    setupToggleButton(deviceId, status);
   } catch (error) {
     console.error("Error getting device status:", error);
     updateUI("Error", "Failed to get device status: " + error.message, true);
@@ -192,14 +185,12 @@ async function handleDeviceData(data, customer_id) {
     falcon.events.on("data", async (data) => {
       try {
         console.log("Received data:", data);
-        // Load settings when we actually need them
-        const settings = await loadSettings();
-        handleDeviceData(data, settings.customer_id);
+        handleDeviceData(data);
       } catch (error) {
         console.error("Error handling data:", error);
         updateUI(
-          "Configuration Error",
-          "Failed to load settings: " + error.message,
+          "Error",
+          "Failed to process device data: " + error.message,
           true
         );
       }
@@ -209,8 +200,8 @@ async function handleDeviceData(data, customer_id) {
   } catch (error) {
     console.error("Setup error:", error);
     updateUI(
-      "Configuration Required",
-      "Please complete the configuration in the Custom apps -> ChromeOS Settings page first",
+      "Configuration Error",
+      "Failed to initialize the extension: " + error.message,
       true
     );
   }

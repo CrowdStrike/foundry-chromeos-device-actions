@@ -17,9 +17,23 @@ The application can be installed through Foundry's app import functionality. You
 - **Falcon Roles:**
   - Falcon Administrator
 - **GCP Service Account Credentials**
-  - The service account must be [associated with a role](https://support.google.com/a/answer/9807615?hl=en&ref_topic=9832445&sjid=12016677148987675569-NA#zippy=%2Cassign-a-role-to-a-service-account) in [Google Admin](https://admin.google.com/) that has the **Manage ChromeOS Devices** privilege
-- **Containment OU ID**
-  - An OU to be used to contain devices. Preferable one with more stringent policies.
+  1. **Create a service account**:
+     - Navigate to the [Google Cloud Console](https://console.cloud.google.com/)
+     - Go to "IAM & Admin" > "Service Accounts"
+     - Click "Create Service Account" and follow the [official documentation](https://cloud.google.com/iam/docs/creating-managing-service-accounts)
+     - Download the JSON key file for authentication
+        > Make sure to note the email address of the service account
+
+  2. **Associate the service account with proper roles**:
+     - The service account must be [associated with a role](https://support.google.com/a/answer/9807615?hl=en&ref_topic=9832445&sjid=12016677148987675569-NA#zippy=%2Cassign-a-role-to-a-service-account) in [Google Admin](https://admin.google.com/)
+       > Make sure to use the email address of the service account when assigning the role
+
+  3. **Required API scopes**:
+     - Ensure the service account has the following API scopes:
+       - `Manage ChromeOS Devices` - For managing ChromeOS devices
+       - `Organizational Units -> read` - For viewing organizational units
+- **Target Containment OU Path**
+  - The path to a dedicated Organizational Unit (OU) for device containment, ideally one that enforces stricter security controls.
 - **Google Admin Customer ID**
   - You can find this in [account settings](https://admin.google.com/u/3/ac/accountsettings)
 
@@ -75,25 +89,51 @@ To install the Foundry app and make it available to your CID:
 1. Fill our your Google Service Account information
    1. Enter a name for your service account credentials
    1. Upload your service account JSON key file
-   1. Select the permission from the dropdown
+   1. Enter your Google Workspace customer ID
 ![configuration](./assets/configuration.png)
 1. Click **Install app** to complete the installation
 
-## Configure Settings
+## UI Extension
 
-Once the apps has been installed, you will need to configure the settings needed for the app to function properly.
+The ChromeOS Device Actions (Foundry app) includes a UI Extension that provides a side panel interface in the **Host Management** and **Endpoint detections** pages. This panel allows security teams to quickly perform ChromeOS management actions directly from the CrowdStrike console without switching to the Google Admin console.
 
-1. Navigate to **Custom apps** and select **Settings** under the Chrome Device Actions app
-<img src="./assets/settings1.png" alt="open-app" width="500">
+The extension allows security teams to perform actions such as disabling devices and enabling devices directly from the CrowdStrike console.
 
-1. Enter your Google Admin Customer ID and your Containment OU ID
-<img src="./assets/settings2.png" alt="settings" width="500">
+![ui-extension](./assets/ui-extension.png)
 
-1. Click **Save** to save your settings
+## Example Custom Fusion Workflows
 
-## Usage
+The Chrome Device Actions app can be integrated with Fusion workflows to automate ChromeOS device management tasks. Here are some example workflows:
 
-Access the workflows via **Fusion**, the custom actions while creating a **Fusion workflow**, and the Enable/Disable button within the side panel in the **Host Management** and **Endpoint detections**. The Enable/Disable button will only be visible if the selected device is a ChromeOS device. For non-ChromeOS devices (Windows, Linux) you will be presented with a disclaimer.
+### Automated Response to ChromeOS Security Incidents
+
+#### Workflow is triggered by a detection
+
+<img src="./assets/wf1-main.png" width="500" alt="Automated Response Workflow" />
+
+#### Workflow Condition Details
+
+The condition checks if the detection's platform is ChromeOS and if the severity is high or critical.
+
+<img src="./assets/wf1-condition.png" width="800" alt="Workflow Condition" />
+
+#### Workflow Action (Move Device)
+
+This workflow action takes the device ID from the `EPP Detection` trigger and a target OU path as input.
+
+- **Device ID (AID)**: configured as a workflow variable from: `Alerts -> EPP Detection -> Sensor host id`
+- **Target OU Path**: manual input to your containment OU path
+
+<img src="./assets/wf1-move-device.png" width="800" alt="Move Device Action" />
+
+#### Workflow Action (Disable Device)
+
+This workflow action takes the device ID from the `EPP Detection` trigger and the target device state as input. In this example we are setting the status/state to `Disabled`.
+
+- **Device ID (AID)**: configured as a workflow variable from: `Alerts -> EPP Detection -> Sensor host id`
+- **Device Status**: drop down list for device state
+
+<img src="./assets/wf1-status.png" width="800" alt="Device Status Action" />
 
 ## Contributing
 
