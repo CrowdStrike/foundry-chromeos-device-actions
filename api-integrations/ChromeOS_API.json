@@ -42,7 +42,7 @@
                 }
               },
               "subject": {
-                "title": "Google subject email to impersonate",
+                "title": "Google subject email to impersonate (optional)",
                 "type": "string"
               }
             },

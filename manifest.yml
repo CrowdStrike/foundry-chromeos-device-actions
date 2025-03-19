@@ -1,5 +1,5 @@
-app_id: fd6f37998eeb47ae88289b57c966fc35
-name: Foundry ChromeOS cmm-test
+app_id: f1d61f92850840688c4cc24088eece68
+name: ChromeOS
 description: A Foundry app for managing and securing ChromeOS devices through the Google Admin API
 logo: ""
 vendor: ""
@@ -14,7 +14,7 @@ ignored:
 ui:
     homepage: ""
     extensions:
-        - id: 5dc09de207114bd8867c73d0063feb04
+        - id: bf77a2c69da74a02a05bde0d6e14ee6b
           name: ChromeOS
           description: Disable/Re-enable ChromeOS devices
           path: ui/extensions/ChromeOS/src
@@ -37,7 +37,7 @@ ui:
     dashboards: {}
     navigation: {}
 api_integrations:
-    - id: a00f0a21f9114fcf8ec0b3f863bf3844
+    - id: addabf03e7c94b83a8db326b3e1abdaa
       name: chromeos-api
       description: ""
       path: api-integrations/ChromeOS_API.json
@@ -48,21 +48,21 @@ auth:
     permissions: {}
     roles: []
 functions:
-    - id: a09a40c73af24b53ac6af396d6ea9fb6
+    - id: 779d112ecd2a4ca5bd3ddbfa72dbd2bc
       name: chromeos-actions
       config: null
-      description: Move a ChromeOS device to OU
+      description: Manage and control ChromeOS devices including organizational unit placement and device status
       path: functions/chromeos-actions
       environment_variables: {}
       handlers:
-        - name: Move ChromeOS Device
-          description: Move a ChromeOS device to OU function
+        - name: Move ChromeOS Device to Organizational Unit
+          description: Move a ChromeOS device to a specified Organizational Unit (OU)
           method: POST
           api_path: /move_chromeos_device
           request_schema: schemas/move_chromeos_device_request_schema.json
           response_schema: schemas/move_chromeos_device_response_schema.json
           workflow_integration:
-            id: 6d0a577b1b864cdca119bac16df2cdff
+            id: 4b44f77225b84b1dbe1c923a645fdf2d
             disruptive: false
             system_action: false
             tags:
@@ -72,13 +72,13 @@ functions:
                 - ChromeOS FaaS
           permissions: []
         - name: Change ChromeOS Device Status
-          description: Disable/Re-enable ChromeOS device function
+          description: Enable (provisioned) or disable a ChromeOS device to control access and functionality
           method: POST
           api_path: /change_device_status
           request_schema: schemas/change_device_status_request_schema.json
           response_schema: schemas/change_device_status_response_schema.json
           workflow_integration:
-            id: 4d99854576d84aada163fc790ee6dd49
+            id: fc0de3ef76b445008c8344c8dd6d5a01
             disruptive: false
             system_action: false
             tags:
