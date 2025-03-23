@@ -48,16 +48,14 @@ async function getDeviceStatus(deviceId) {
     } else {
       // Handle non-200 status codes
       const statusCode = response.resources?.[0]?.status_code || "unknown";
-      const errorBody = response.resources?.[0]?.response_body || {};
-
-      throw new Error(
-        `API returned status ${statusCode}: ${JSON.stringify(errorBody)}`
-      );
+      throw new Error("Failed to retrieve device data, please ensure device exists and/or credentials are correct");
     }
   } catch (error) {
     console.error("Error getting device status:", error);
-    // Preserve the original error but add more context
-    error.message = `ChromeOS API Error: ${error.message}`;
+    // Use generic error message instead of specific ones
+    if (!error.message.includes("Failed to retrieve device data")) {
+      error.message = "Failed to retrieve device data, please ensure device exists and/or credentials are correct";
+    }
     throw error;
   }
 }
@@ -179,22 +177,7 @@ async function handleDeviceData(data) {
     setupToggleButton(deviceId, status);
   } catch (error) {
     console.error("Error getting device status:", error);
-
-    // Enhanced error handling with specific messages for common API issues
-    let errorMessage = "Failed to get device status: " + error.message;
-
-    // Check for common API error patterns
-    if (error.status === 401 || error.message.includes("unauthorized")) {
-      errorMessage = "Authentication failed: Please check your API credentials";
-    } else if (error.status === 403 || error.message.includes("forbidden")) {
-      errorMessage =
-        "Access denied: Your account doesn't have permission to perform this operation";
-    } else if (error.status === 404 || error.message.includes("not found")) {
-      errorMessage =
-        "Resource not found: The ChromeOS API may not be configured correctly";
-    }
-
-    updateUI("Error", errorMessage, true);
+    updateUI("Error", error.message, true);
   }
 }
 
