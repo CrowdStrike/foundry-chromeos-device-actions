@@ -31,7 +31,8 @@ ui:
             img-src: []
             media-src: []
             object-src: []
-          permissions: []
+          permissions:
+            - disable-chromeos-device
           is_ui_builder: false
     pages: {}
     dashboards: {}
@@ -45,8 +46,17 @@ rtr_scripts: []
 collections: []
 auth:
     scopes: []
-    permissions: {}
-    roles: []
+    permissions:
+        disable-chromeos-device:
+            id: 2085697077984ed7aa687b416ab063f8
+            name: Disable ChromeOS Device
+            description: Enable and disable ChromeOS device using the ChromeOS Device Actions UI extension.
+    roles:
+        - id: 51085d0947e84c04bb7cb34f1fa7b64b
+          name: ChromeOS Security Admin
+          description: Enable and disable ChromeOS device using the ChromeOS Device Actions UI extension.
+          permissions:
+            - disable-chromeos-device
 functions:
     - id: 779d112ecd2a4ca5bd3ddbfa72dbd2bc
       name: chromeos-actions
