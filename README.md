@@ -13,6 +13,23 @@ The current implementation allows users to contain, disable, and re-enable Chrom
 
 ![chromeos-disable](./assets/chromeos-disable.png)
 
+## Table of Contents
+
+- [Installation](#installation)
+  - [Requirements](#requirements)
+  - [Download the app](#download-the-app)
+  - [Import the app into Foundry](#import-the-app-into-foundry)
+  - [Release the app](#release-the-app)
+  - [Install the app](#install-the-app)
+- [UI Extension](#ui-extension)
+- [User Roles](#user-roles)
+- [Example Custom Fusion Workflows](#example-custom-fusion-workflows)
+- [Contributing](#contributing)
+- [Security](#security)
+- [Support](#support)
+- [License](#license)
+
+
 ## Installation
 
 The application can be installed through Foundry's app import functionality. You'll need appropriate permissions in your Foundry environment, as well as the appropriate GCP service account credentials to import and install the application.
@@ -111,6 +128,19 @@ The ChromeOS Device Actions (Foundry app) includes a UI Extension that provides 
 The extension allows security teams to perform actions such as disabling devices and enabling devices directly from the CrowdStrike console.
 
 ![ui-extension](./assets/ui-extension.png)
+
+## User Roles
+
+The ChromeOS Device Actions app includes a predefined role that can be assigned to users:
+
+- **ChromeOS Security Admin**: This role has permissions to enable and disable ChromeOS devices using the ChromeOS Device Actions UI extension.
+
+In order to leverage this role properly, users need to be assigned this role, along with the **Foundry-Extensions** built-in role in the CrowdStrike console under **User Management**.
+
+> [!NOTE]
+> Administrators should ensure that only authorized personnel are granted this role to maintain security controls over ChromeOS device management actions.
+
+<img src="./assets/roles.png" alt="User Roles" />
 
 ## Example Custom Fusion Workflows
 
