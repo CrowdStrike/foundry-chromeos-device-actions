@@ -13,6 +13,23 @@ The current implementation allows users to contain, disable, and re-enable Chrom
 
 ![chromeos-disable](./assets/chromeos-disable.png)
 
+## Table of Contents
+
+- [Installation](#installation)
+  - [Requirements](#requirements)
+  - [Download the app](#download-the-app)
+  - [Import the app into Foundry](#import-the-app-into-foundry)
+  - [Release the app](#release-the-app)
+  - [Install the app](#install-the-app)
+- [UI Extension](#ui-extension)
+- [User Roles](#user-roles)
+- [Example Custom Fusion Workflows](#example-custom-fusion-workflows)
+- [Contributing](#contributing)
+- [Security](#security)
+- [Support](#support)
+- [License](#license)
+
+
 ## Installation
 
 The application can be installed through Foundry's app import functionality. You'll need appropriate permissions in your Foundry environment, as well as the appropriate GCP service account credentials to import and install the application.
