@@ -112,6 +112,19 @@ The extension allows security teams to perform actions such as disabling devices
 
 ![ui-extension](./assets/ui-extension.png)
 
+## User Roles
+
+The ChromeOS Device Actions app includes a predefined role that can be assigned to users:
+
+- **ChromeOS Security Admin**: This role has permissions to enable and disable ChromeOS devices using the ChromeOS Device Actions UI extension.
+
+In order to leverage this role properly, users need to be assigned this role, along with the **Foundry-Extensions** built-in role in the CrowdStrike console under **User Management**.
+
+> [!NOTE]
+> Administrators should ensure that only authorized personnel are granted this role to maintain security controls over ChromeOS device management actions.
+
+<img src="./assets/roles.png" alt="User Roles" />
+
 ## Example Custom Fusion Workflows
 
 The Chrome Device Actions app can be integrated with Fusion workflows to automate ChromeOS device management tasks. Here are some example workflows:
